@@ -108,49 +108,64 @@ data_transformer <- function(df) {
 #Data Sources
 "Dong E, Du H, Gardner L. An interactive web-based dashboard to track COVID-19 in real time. 
 Lancet Inf Dis. 20(5):533-534. doi: 10.1016/S1473-3099(20)30120-1"
-#get the daily global cases data from API
-Cases_URL <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
-global_cases <- read.csv(Cases_URL)
 
-#get the daily global deaths data from API
-Death_URL <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
-global_death <- read.csv(Death_URL)
+###### Time Series Data ##########
+# get the time series U.S. cases data from API
+Cases_Time_URL <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
+us_cases <- read.csv(Cases_Time_URL)
 
+# get the time series U.S. death data from API
+Death_Time_URL <- "https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
+us_death <- read.csv(Death_Time_URL)
 
-#get aggregate cases 
-aggre_cases <- as.data.frame(data_transformer(global_cases))
-#get aggregate death
-aggre_death <- as.data.frame(data_transformer(global_death))
+############ One Time Data ############
+# get variants data
+variants <- read.csv("../data/raw_map_data/variant_data.csv")
+
+# get GDP data
+GDP <- read.csv("../data/raw_map_data/GDP_data.csv")
+
+# get personal income data
+income <- read.csv("../data/raw_map_data/personal_income_data.csv")
+
+# get vaccination data
+# To be continued...
+
+# get aggregate cases 
+aggre_cases <- as.data.frame(data_transformer(us_cases))
+# get aggregate death
+aggre_death <- as.data.frame(data_transformer(us_death))
+
 #define date_choices 
 date_choices <- as.Date(colnames(aggre_cases),format = '%Y-%m-%d')
 #define country_names
-country_names_choices <- rownames(aggre_cases)
+state_names_choices <- rownames(aggre_cases)
 
 #Download the spatial polygons dataframe in this link
 # https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-countries-2/
 
-output_shapefile_filepath <- "./output/countries_shapeFile.RData"
+output_shapefile_filepath <- "./output/states_shapeFile.RData"
 
 #if already has countries_shapeFile.RData under output folder, no need to process it again
 #otherwise, read files from data folder to create countries_shapeFile.RData under output folder
 if(file.exists(output_shapefile_filepath)){
   load(output_shapefile_filepath)
 }else{
-  countries <- readOGR(dsn ="../data/ne_50m_admin_0_countries",
-                       layer = "ne_50m_admin_0_countries",
+  states <- readOGR(dsn ="../data/ne_110m_admin_1_states_provinces",
+                       layer = "ne_110m_admin_1_states_provinces",
                        encoding = "utf-8",use_iconv = T,
                        verbose = FALSE)
-  save(countries, file=output_shapefile_filepath)
+  save(states, file=output_shapefile_filepath)
 }
 
 
 #make a copy of aggre_cases dataframe
 aggre_cases_copy <- as.data.frame(aggre_cases)
-aggre_cases_copy$country_names <- as.character(rownames(aggre_cases_copy))
+aggre_cases_copy$state_names <- as.character(rownames(aggre_cases_copy))
 
 #make a copy of aggre_death dataframe
 aggre_death_copy <- as.data.frame(aggre_death)
-aggre_death_copy$country_names <- as.character(rownames(aggre_death_copy))
+aggre_death_copy$state_names <- as.character(rownames(aggre_death_copy))
 
 binning<- function(x) {10^(ceiling(log10(x)))}
 
