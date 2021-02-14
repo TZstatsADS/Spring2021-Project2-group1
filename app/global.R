@@ -59,42 +59,66 @@ if (!require("viridis")) {
 }
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
-data_cooker <- function(df){
+#data_cooker <- function(df){
   #input dataframe and change the Country/Region column into standard format
-  df$Country.Region <- as.character(df$Country.Region)
-  df$Country.Region[df$Country.Region == "Congo (Kinshasa)"] <- "Dem. Rep. Congo"
-  df$Country.Region[df$Country.Region == "Congo (Brazzaville)"] <- "Congo"
-  df$Country.Region[df$Country.Region == "Central African Republic"] <- "Central African Rep."
-  df$Country.Region[df$Country.Region == "Equatorial Guinea"] <- "Eq. Guinea"
-  df$Country.Region[df$Country.Region == "Western Sahara"]<-"W. Sahara"
-  df$Country.Region[df$Country.Region == "Eswatini"] <- "eSwatini"
-  df$Country.Region[df$Country.Region == "Taiwan*"] <- "Taiwan"
-  df$Country.Region[df$Country.Region== "Cote d'Ivoire"] <-"Côte d'Ivoire"
-  df$Country.Region[df$Country.Region == "Korea, South"] <- "South Korea"
-  df$Country.Region[df$Country.Region == "Bosnia and Herzegovina"] <- "Bosnia and Herz."
-  df$Country.Region[df$Country.Region == "US"] <- "United States of America"
-  df$Country.Region[df$Country.Region == "Burma"]<-"Myanmar"
-  df$Country.Region[df$Country.Region == "Holy See"]<-"Vatican"
-  df$Country.Region[df$Country.Region=="South Sudan"]<-"S. Sudan"
-  return(df)
-}
+#  df$Country.Region <- as.character(df$Country.Region)
+#  df$Country.Region[df$Country.Region == "Congo (Kinshasa)"] <- "Dem. Rep. Congo"
+#  df$Country.Region[df$Country.Region == "Congo (Brazzaville)"] <- "Congo"
+#  df$Country.Region[df$Country.Region == "Central African Republic"] <- "Central African Rep."
+#  df$Country.Region[df$Country.Region == "Equatorial Guinea"] <- "Eq. Guinea"
+#  df$Country.Region[df$Country.Region == "Western Sahara"]<-"W. Sahara"
+#  df$Country.Region[df$Country.Region == "Eswatini"] <- "eSwatini"
+#  df$Country.Region[df$Country.Region == "Taiwan*"] <- "Taiwan"
+#  df$Country.Region[df$Country.Region== "Cote d'Ivoire"] <-"Côte d'Ivoire"
+#  df$Country.Region[df$Country.Region == "Korea, South"] <- "South Korea"
+#  df$Country.Region[df$Country.Region == "Bosnia and Herzegovina"] <- "Bosnia and Herz."
+#  df$Country.Region[df$Country.Region == "US"] <- "United States of America"
+#  df$Country.Region[df$Country.Region == "Burma"]<-"Myanmar"
+#  df$Country.Region[df$Country.Region == "Holy See"]<-"Vatican"
+#  df$Country.Region[df$Country.Region=="South Sudan"]<-"S. Sudan"
+#  return(df)
+#}
 
 
-data_transformer <- function(df) {
+data_transformer_case <- function(df) {
   #################################################################
   ##Given dataframe tranform the dataframe into aggregate level with
   ##rownames equal to countries name, and colnames equals date
   #################################################################
   #clean the country/regionnames
-  df <- data_cooker(df)
+#  df <- data_cooker(df)
   #columns that don't need 
-  not_select_cols <- c("Province.State","Lat","Long")
+ not_select_cols <- c("UID","iso2","iso3","code3","FIPS","Admin2","Country_Region","Combined_Key","Lat","Long_")
   #aggregate the province into country level
-  aggre_df <- df %>% group_by(Country.Region) %>% 
+  aggre_df <- df %>% group_by(Province_State) %>% 
     select(-one_of(not_select_cols)) %>% summarise_all(sum)
   #assign the country name into row names 
   aggre_df <- aggre_df %>% remove_rownames %>% 
-    tibble::column_to_rownames(var="Country.Region")
+    tibble::column_to_rownames(var="Province_State")
+  #change the colume name into date format
+  date_name <- colnames(aggre_df)
+  #change e.g: "x1.22.20" -> "2020-01-22"
+  date_choices <- as.Date(date_name,format = 'X%m.%d.%y')
+  #assign column nam
+ colnames(aggre_df) <- date_choices
+ return(aggre_df)
+}
+
+data_transformer_death <- function(df) {
+  #################################################################
+  ##Given dataframe tranform the dataframe into aggregate level with
+  ##rownames equal to countries name, and colnames equals date
+  #################################################################
+  #clean the country/regionnames
+  #  df <- data_cooker(df)
+  #columns that don't need 
+  not_select_cols <- c("UID","iso2","iso3","code3","FIPS","Admin2","Country_Region","Combined_Key","Population", "Lat","Long_")
+  #aggregate the province into country level
+  aggre_df <- df %>% group_by(Province_State) %>% 
+    select(-one_of(not_select_cols)) %>% summarise_all(sum)
+  #assign the country name into row names 
+  aggre_df <- aggre_df %>% remove_rownames %>% 
+    tibble::column_to_rownames(var="Province_State")
   #change the colume name into date format
   date_name <- colnames(aggre_df)
   #change e.g: "x1.22.20" -> "2020-01-22"
@@ -115,7 +139,7 @@ Cases_Time_URL <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/mas
 us_cases <- read.csv(Cases_Time_URL)
 
 # get the time series U.S. death data from API
-Death_Time_URL <- "https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
+Death_Time_URL <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
 us_death <- read.csv(Death_Time_URL)
 
 ############ One Time Data ############
@@ -132,13 +156,13 @@ income <- read.csv("../data/raw_map_data/personal_income_data.csv")
 # To be continued...
 
 # get aggregate cases 
-aggre_cases <- as.data.frame(data_transformer(us_cases))
+aggre_cases <- as.data.frame(data_transformer_case(us_cases))
 # get aggregate death
-aggre_death <- as.data.frame(data_transformer(us_death))
+aggre_death <- as.data.frame(data_transformer_death(us_death))
 
 #define date_choices 
 date_choices <- as.Date(colnames(aggre_cases),format = '%Y-%m-%d')
-#define country_names
+#define state_names
 state_names_choices <- rownames(aggre_cases)
 
 #Download the spatial polygons dataframe in this link
@@ -151,8 +175,8 @@ output_shapefile_filepath <- "./output/states_shapeFile.RData"
 if(file.exists(output_shapefile_filepath)){
   load(output_shapefile_filepath)
 }else{
-  states <- readOGR(dsn ="../data/ne_110m_admin_1_states_provinces",
-                       layer = "ne_110m_admin_1_states_provinces",
+  states <- readOGR(dsn ="../data/ne_10m_admin_1_states_provinces",
+                       layer = "ne_10m_admin_1_states_provinces",
                        encoding = "utf-8",use_iconv = T,
                        verbose = FALSE)
   save(states, file=output_shapefile_filepath)
