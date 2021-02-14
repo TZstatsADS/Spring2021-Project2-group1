@@ -1,0 +1,1 @@
+https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=532&Statistic=1&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1
