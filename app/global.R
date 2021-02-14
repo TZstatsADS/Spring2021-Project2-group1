@@ -59,26 +59,92 @@ if (!require("viridis")) {
 }
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
-#data_cooker <- function(df){
+data_cooker_variants <- function(df){
   #input dataframe and change the Country/Region column into standard format
-#  df$Country.Region <- as.character(df$Country.Region)
-#  df$Country.Region[df$Country.Region == "Congo (Kinshasa)"] <- "Dem. Rep. Congo"
-#  df$Country.Region[df$Country.Region == "Congo (Brazzaville)"] <- "Congo"
-#  df$Country.Region[df$Country.Region == "Central African Republic"] <- "Central African Rep."
-#  df$Country.Region[df$Country.Region == "Equatorial Guinea"] <- "Eq. Guinea"
-#  df$Country.Region[df$Country.Region == "Western Sahara"]<-"W. Sahara"
-#  df$Country.Region[df$Country.Region == "Eswatini"] <- "eSwatini"
-#  df$Country.Region[df$Country.Region == "Taiwan*"] <- "Taiwan"
-#  df$Country.Region[df$Country.Region== "Cote d'Ivoire"] <-"Côte d'Ivoire"
-#  df$Country.Region[df$Country.Region == "Korea, South"] <- "South Korea"
-#  df$Country.Region[df$Country.Region == "Bosnia and Herzegovina"] <- "Bosnia and Herz."
-#  df$Country.Region[df$Country.Region == "US"] <- "United States of America"
-#  df$Country.Region[df$Country.Region == "Burma"]<-"Myanmar"
-#  df$Country.Region[df$Country.Region == "Holy See"]<-"Vatican"
-#  df$Country.Region[df$Country.Region=="South Sudan"]<-"S. Sudan"
-#  return(df)
-#}
+  df$State[df$State == "AL"] <- "Alabama"
+  df$State[df$State == "AK"] <- "Alaska"
+  df$State[df$State == "AS"] <- "American Samoa"
+  df$State[df$State == "AZ"] <- "Arizona"
+  df$State[df$State == "AR"] <- "Arkansas"
+  df$State[df$State == "CA"] <- "California"
+  df$State[df$State == "CO"] <- "Colorado"
+  df$State[df$State == "CT"] <- "Connecticut"
+  df$State[df$State == "DE"] <- "Delaware"
+  df$State[df$State == "FL"] <- "Florida"
+  df$State[df$State == "GA"] <- "Georgia"
+  df$State[df$State == "GU"] <- "Guam"
+  df$State[df$State == "HI"] <- "Hawaii"
+  df$State[df$State == "ID"] <- "Idaho"
+  df$State[df$State == "IL"] <- "Illinois"
+  df$State[df$State == "IN"] <- "Indiana"
+  df$State[df$State == "IA"] <- "Iowa"
+  df$State[df$State == "KS"] <- "Kansas"
+  df$State[df$State == "KY"] <- "Kentucky"
+  df$State[df$State == "LA"] <- "Louisiana"
+  df$State[df$State == "ME"] <- "Maine"
+  df$State[df$State == "MH"] <- "Marshall Islands"
+  df$State[df$State == "MD"] <- "Maryland"
+  df$State[df$State == "MA"] <- "Massachusetts"
+  df$State[df$State == "MI"] <- "Michigan"
+  df$State[df$State == "FM"] <- "Micronesia"
+  df$State[df$State == "MN"] <- "Minnesota"
+  df$State[df$State == "MS"] <- "Mississippi"
+  df$State[df$State == "MO"] <- "Missouri"
+  df$State[df$State == "MT"] <- "Montana"
+  df$State[df$State == "NE"] <- "Nebraska"
+  df$State[df$State == "NV"] <- "Nevada"
+  df$State[df$State == "NH"] <- "New Hampshire"
+  df$State[df$State == "NJ"] <- "Neo Jersey"
+  df$State[df$State == "NM"] <- "New Mexico"
+  df$State[df$State == "NY"] <- "New York"
+  df$State[df$State == "NC"] <- "North Carolina"
+  df$State[df$State == "ND"] <- "North Dakota"
+  df$State[df$State == "MP"] <- "Northern Marianas"
+  df$State[df$State == "OH"] <- "Ohio"
+  df$State[df$State == "OK"] <- "Oklahoma"
+  df$State[df$State == "OR"] <- "Oregon"
+  df$State[df$State == "PW"] <- "Palau"
+  df$State[df$State == "PA"] <- "Pennsylvania"
+  df$State[df$State == "PR"] <- "Puerto Rico"
+  df$State[df$State == "RI"] <- "Rhode Island"
+  df$State[df$State == "SC"] <- "South Carolina"
+  df$State[df$State == "SD"] <- "South Dakota"
+  df$State[df$State == "TN"] <- "Tennessee"
+  df$State[df$State == "TX"] <- "Texas"
+  df$State[df$State == "UT"] <- "Utah"
+  df$State[df$State == "VT"] <- "Vermont"
+  df$State[df$State == "VI"] <- "Virgin Islands"
+  df$State[df$State == "VA"] <- "Washington"
+  df$State[df$State == "WA"] <- "West Virginia"
+  df$State[df$State == "WV"] <- "West Virginia"
+  df$State[df$State == "WI"] <- "Wisconsin"
+  df$State[df$State == "WY"] <- "Wyoming"
+  return(df)
+}
 
+data_transformer_variants <- function(df) {
+  df <- data_cooker_variants(df)
+  not_select_cols <- c("Range")
+  aggre_df <- df %>% select(-one_of(not_select_cols)) 
+  return(aggre_df)
+}
+
+
+data_transformer_GDP <- function(df) {
+  not_select_cols <- c("GeoFips")
+  #aggregate the province into country level
+  aggre_df <- df %>% select(-one_of(not_select_cols)) 
+  return(aggre_df)
+}
+
+data_transformer_income <- function(df) {
+  not_select_cols <- c("GeoFips")
+  #aggregate the province into country level
+  aggre_df <- df %>% select(-one_of(not_select_cols)) 
+  return(aggre_df)
+}
+  
+data_transformer_variant
 
 data_transformer_case <- function(df) {
   #################################################################
@@ -145,6 +211,7 @@ us_death <- read.csv(Death_Time_URL)
 ############ One Time Data ############
 # get variants data
 variants <- read.csv("../data/raw_map_data/variant_data.csv")
+variants <- variants[-c(175,176,177,178,179,180,181,182,183,184),]
 
 # get GDP data
 GDP <- read.csv("../data/raw_map_data/GDP_data.csv")
@@ -159,6 +226,13 @@ income <- read.csv("../data/raw_map_data/personal_income_data.csv")
 aggre_cases <- as.data.frame(data_transformer_case(us_cases))
 # get aggregate death
 aggre_death <- as.data.frame(data_transformer_death(us_death))
+# get aggregate GDP
+aggre_GDP <- as.data.frame(data_transformer_GDP(GDP))
+
+# get aggregate variants
+aggre_variants <- as.data.frame(data_transformer_variants(variants))
+# get aggregate personal income
+aggre_income <- as.data.frame(data_transformer_income(income))
 
 #define date_choices 
 date_choices <- as.Date(colnames(aggre_cases),format = '%Y-%m-%d')
