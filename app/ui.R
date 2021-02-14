@@ -26,7 +26,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                    fluid = TRUE,
                    collapsible = TRUE,
                    #Select whichever theme works for the app 
-                   theme = shinytheme("journal"),
+                   theme = shinytheme("darkly"),
                    #--------------------------
                    #tab panel 1 - Home
                    tabPanel("Home",icon = icon("home"),
