@@ -56,7 +56,22 @@ if (!require("ggplot2")) {
 if (!require("viridis")) {
   install.packages("viridis")
   library(viridis)
+  
 }
+
+if (!require("rvest")) {
+  install.packages("rvest")
+  library(rvest)
+}
+if (!require("robotstxt")) {
+  install.packages("robotstxt")
+  library(robotstxt)
+}
+if (!require("stringr")) {
+  install.packages("stringr")
+  library(stringr)
+}
+
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
 data_cooker_variants <- function(df){
@@ -220,7 +235,23 @@ GDP <- read.csv("../data/raw_map_data/GDP_data.csv")
 income <- read.csv("../data/raw_map_data/personal_income_data.csv")
 
 # get vaccination data
-# To be continued...
+#get the updated vaccination data by states
+web_scrape <- read_html("https://www.beckershospitalreview.com/public-health/states-ranked-by-percentage-of-covid-19-vaccines-administered.html")
+write_html(web_scrape, "../data/raw_map_data/Vaccination_Rates.html")
+VR <- read_html('../data/raw_map_data/Vaccination_Rates.html')
+State <- VR %>% html_nodes("ol") %>% html_nodes("li") %>% html_nodes("strong") %>% html_text()
+state_data = VR %>% html_nodes("ol") %>% html_nodes("li") %>% html_text()
+Distributed = rep(NA,50)
+Administered = rep(NA,50)
+Percentage = rep(NA,50)
+for (i in 1:length(State)){
+  split_data <- str_split(state_data[[i]],":")
+  Distributed[i] = parse_number(split_data[[1]][2])
+  Administered[i] = parse_number(split_data[[1]][3])
+  Percentage[i] = parse_number(split_data[[1]][4])
+}
+vaccine_data = data.frame(cbind(State,Distributed,Administered,Percentage))
+
 
 # get aggregate cases 
 aggre_cases <- as.data.frame(data_transformer_case(us_cases))
