@@ -95,3 +95,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                             ))
                    
 ))
+
+#Tab panel 4 - 
+
+tabPanel
