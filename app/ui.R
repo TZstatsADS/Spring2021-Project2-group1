@@ -26,7 +26,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                    fluid = TRUE,
                    collapsible = TRUE,
                    #Select whichever theme works for the app 
-                   theme = shinytheme("journal"),
+                   theme = shinytheme("darkly"),
                    #--------------------------
                    #tab panel 1 - Home
                    tabPanel("Home",icon = icon("home"),
@@ -49,7 +49,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                                   #select the country we want to see the trend
                                                   column(6, 
                                                          selectInput('country','Which Country?',
-                                                                     choices = country_names_choices,
+                                                                     choices = state_names_choices,
                                                                      selected = 'United States of America')),
                                                   #select whether want case number in log-scale or not
                                                   column(6,
