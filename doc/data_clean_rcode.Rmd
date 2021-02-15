@@ -1,0 +1,93 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+```{r data clean for first 4 indicators in the model}
+library(tidyverse)
+setwd("~/Downloads/GitHub/Spring2021-Project2-group1/data")
+Dec_data<-read_csv("12-31-2020.csv")%>%
+  transmute(State=Province_State,Confirmed_Dec=Confirmed,Deaths_Dec=Deaths)%>%
+  group_by(State)%>%
+  summarise_all(sum)
+HDI<-read_csv("HDI_USA_2018.csv")%>%
+  rename(State=Region,HDI=Sub_national_HDI)%>%
+  filter(State!="Total")%>%
+  select(State:Educational_index)
+
+
+healthcare<-read_csv("healthcare_coverage_rank_2018.csv")%>%
+  drop_na()%>%
+  rename(State=STATE,Rank_health=RANK)
+GDP_prediction<-read_csv("US_GDP_prediction.csv")
+
+
+indicators<-read_csv("01-31-2021.csv")%>%
+  transmute(State=Province_State,Confirmed_Jan=Confirmed,Total_Deaths=Deaths,
+            Positive_Test_Rate=Confirmed_Jan/Total_Test_Results)%>%
+  group_by(State)%>%
+  summarise_all(sum)%>%
+left_join(.,Dec_data,by="State")%>%
+  transmute(State,One_Month_Cases=Confirmed_Jan-Confirmed_Dec,One_month_fatality_rate=(Total_Deaths-Deaths_Dec)/Total_Deaths,Total_Deaths,Positive_Test_Rate)%>%
+  left_join(.,HDI,by="State")%>%
+  left_join(.,healthcare,by="State")%>%
+  left_join(.,GDP_prediction,by="State")%>%
+  drop_na()
+ 
+
+write_csv(indicators,"../indictors_of_model.csv")
+```
+
+```{r, max_min method}
+library(tidyverse)
+setwd("~/Downloads/GitHub/Spring2021-Project2-group1/data/cleaned_model_data")
+model_data<-read_csv("modeldata.csv")[,-1]
+I<- function(A){
+  min_value<-min(A)
+  max_value<-max(A)
+  score<-matrix(NA,nrow=length(A))
+  for (i in 1:length(A)){
+    V<-A[i]
+    score[i]<-(V-min_value)/(max_value-min_value)}
+  return(score)
+}
+scale_indicators<-data.frame(sapply(model_data[,-1],I))
+scale_indicators$State<-model_data$State
+scale_indicators<-scale_indicators%>%
+  relocate(State)%>%
+  mutate(One_Month_Cases=1-One_Month_Cases,
+         One_month_fatality_rate=1-One_month_fatality_rate,
+         Total_Deaths=1-Total_Deaths,
+         Rank_health=1-Rank_health,
+         Positive_Test_Rate=1-Positive_Test_Rate,
+         lockdown_severity=1-lockdown_severity,
+         Chronic.respiratory.diseases.mortality.rate=1-Chronic.respiratory.diseases.mortality.rate,
+         Lower.respiratory.infections.mortality.rate=1-Lower.respiratory.infections.mortality.rate, obesity_prevalence=1-obesity_prevalence
+
+
+
+)
+
+scale_indicators$Score <- 100*rowMeans(x = scale_indicators[,-1])
+scale_indicators$Rank <- 51-rank(scale_indicators$Score)
+final_model<-scale_indicators%>%
+  select(State,Score,Rank)%>%
+  left_join(model_data,.,by="State")
+write_csv(scale_indicators,"../scale_indictors_of_model.csv")
+write_csv(final_model,"../final_model.csv")
+
+```
+
