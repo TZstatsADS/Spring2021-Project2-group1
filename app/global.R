@@ -296,6 +296,15 @@ aggre_cases_copy$state_names <- as.character(rownames(aggre_cases_copy))
 aggre_death_copy <- as.data.frame(aggre_death)
 aggre_death_copy$state_names <- as.character(rownames(aggre_death_copy))
 
+aggre_GDP_copy <- as.data.frame(aggre_GDP)
+aggre_income_copy <- as.data.frame(aggre_income)
+aggre_variants_copy <- as.data.frame(aggre_variants)
+aggre_vaccine <- as.data.frame(vaccine_data)
+aggre_vaccine_copy <- as.data.frame(aggre_vaccine)
+
+model_data <- read.csv("./output/cleaned_model_data/final_model4.csv")
+model_data_copy <- as.data.frame(model_data)
+
 binning<- function(x) {10^(ceiling(log10(x)))}
 
 #use save.image() at any time to save all environment data into an .RData file
