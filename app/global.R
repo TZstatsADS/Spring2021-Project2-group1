@@ -145,6 +145,18 @@ if (!require("plotly")) {
   install.packages("plotly")
   library(plotly)
 }
+if (!require("dichromat")) {
+  install.packages("dichromat")
+  library(dichromat)
+}
+if (!require("htmltools")) {
+  install.packages("htmltools")
+  library(htmltools)
+}
+if (!require("reactable")) {
+  install.packages("reactable")
+  library(reactable)
+}
 
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
@@ -440,7 +452,7 @@ aggre_variants_copy <- as.data.frame(aggre_variants)
 aggre_vaccine <- as.data.frame(vaccine_data)
 aggre_vaccine_copy <- as.data.frame(aggre_vaccine)
 
-model_data <- read.csv("./output/cleaned_model_data/final_model4.csv")
+model_data <- read.csv("./output/cleaned_model_data/final_model_table.csv")
 model_data_copy <- as.data.frame(model_data)
 aggre_vaccine_use <- aggre_vaccine_copy[,c(1,4)]
 aggre_GDP_use <- aggre_GDP_copy[2:60,c(1,64)]
@@ -456,6 +468,55 @@ map_data <- merge(x = model_data_copy, y = aggre_GDP_use, by = "State")
 map_data <- merge(x= map_data, y = aggre_vaccine_use, by = "State")
 map_data <- merge(map_data, aggre_variants_use,by = "State")
 map_data <- merge(map_data, aggre_income_use,by = "State")
+
+
+####### Table Function ###########
+
+rank_data <- model_data
+covid_cols<-c("One_Month_Cases","One_month_fatality_rate","Total_Deaths","Positive_Test_Rate")
+human_cols<-c("lockdown_severity","Mobility","Gross_State_Product","Rank_health","HDI")
+vul_cols<-c("assess_to_vaccines_per_hundred",
+            "doses_per_hundred",
+            "HospitalBeds",
+            "respiratory_mortality_rate",
+            "respiratory_infections_rate",
+            "obesity_prevalence")
+
+rank_data<-rank_data[,c("Rank","State","Score",covid_cols,vul_cols,human_cols)]
+
+covid_column <- function(maxWidth = 80, class = paste("cell number", class), ...) {
+  colDef(maxWidth = maxWidth, align = "center", ...)
+}
+
+vul_column <- function(maxWidth = 80, class = "cell",...) {
+  colDef(maxWidth = maxWidth, align = "center", ...)
+}
+
+human_column <- function(maxWidth = 80, class = "cell",...) {
+  colDef(maxWidth = maxWidth, align = "center", ...)
+}
+
+format_pct <- function(value) {
+  if (value == 0) "  \u2013 "    # en dash for 0%
+  else if (value == 1) "\u2713"  # checkmark for 100%
+  else if (value < 0.01) " <1%"
+  else if (value > 0.99) ">99%"
+  else formatC(paste0(round(value * 100), "%"), width = 4)
+}
+
+make_color_pal <- function(colors, bias = 1) {
+  get_color <- colorRamp(colors, bias = bias)
+  function(x) rgb(get_color(x), maxColorValue = 255)
+}
+
+good_color <- make_color_pal(colorschemes$BluetoOrange.12, bias = 2)
+
+sticky_style <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
+                     borderRight = "1px solid #eee")
+
+### Table Function Ends
+
+
 
 binning<- function(x) {10^(ceiling(log10(x)))}
 
