@@ -69,7 +69,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                                 fluidRow(
                                                   #select the country we want to see the trend
                                                   column(6, 
-                                                         selectInput('country','Which Country?',
+                                                         selectInput('country','Which State?',
                                                                      choices = state_names_choices,
                                                                      selected = 'United States of America')),
                                                   #select whether want case number in log-scale or not

@@ -102,86 +102,77 @@ output$case_overtime <- renderPlotly({
         })
 #----------------------------------------
 #tab panel 2 - Maps
-Indicator_data = reactive({
-  aggre_GDP_copy() %>% 
-    select(State, Score, Rank = input$IndicatortInput)
+
+data_countries <- reactive({
+    if(!is.null(input$choices)){
+        if(input$choices == "Cases"){
+            return(aggre_cases_copy)
+            
+        }else{
+            return(aggre_death_copy)
+        }}
 })
 
-
-output$drawmap <- renderLeaflet(draw_map(Indicator_data(), input$IndicatortInput))
-
-
-#data_countries <- reactive({
-#    if(!is.null(input$choices)){
-      #  if(input$choices == "Cases"){
-     #       return(aggre_cases_copy)
-    #        
-   #     }else{
-  #          return(aggre_death_copy)
- #       }}
-#})
-
 #get the largest number of count for better color assignment
-#maxTotal<- reactive(max(data_countries()%>%select_if(is.numeric), na.rm = T))    
+maxTotal<- reactive(max(data_countries()%>%select_if(is.numeric), na.rm = T))    
 ##color palette
-#pal <- reactive(colorNumeric(c("#FFFFFFFF" ,rev(inferno(256))), domain = c(0,log(binning(maxTotal())))))    
+pal <- reactive(colorNumeric(c("#FFFFFFFF" ,rev(inferno(256))), domain = c(0,log(binning(maxTotal())))))    
     
-#output$map <- renderLeaflet({
-  #  map <-  leaflet(countries) %>%
- #       addProviderTiles("Stadia.Outdoors", options = providerTileOptions(noWrap = TRUE)) %>%
-#        setView(0, 30, zoom = 3) })
+output$map <- renderLeaflet({
+    map <-  leaflet(states) %>%
+        addProviderTiles("Stadia.Outdoors", options = providerTileOptions(noWrap = TRUE)) %>%
+        setView(0, 30, zoom = 3) })
 
-
-#observe({
-  #  if(!is.null(input$date_map)){
- #       select_date <- format.Date(input$date_map,'%Y-%m-%d')
-#    }
-    #if(input$choices == "Cases"){
-    #    #merge the spatial dataframe and cases dataframe
-   #     aggre_cases_join <- merge(countries,
-  #                                data_countries(),
- #                                 by.x = 'NAME',
-#                                  by.y = 'country_names',sort = FALSE)
+observe({
+    if(!is.null(input$date_map)){
+        select_date <- format.Date(input$date_map,'%Y-%m-%d')
+    }
+    if(input$choices == "Cases"){
+        #merge the spatial dataframe and cases dataframe
+        aggre_cases_join <- merge(states,
+                                  data_countries(),
+                                  by.x = 'name',
+                                  by.y = 'state_names',sort = FALSE)
         ##pop up for polygons
-        #country_popup <- paste0("<strong>Country: </strong>",
-             #                   aggre_cases_join$NAME,
-            #                    "<br><strong>",
-           #                     "Total Cases: ",
-          #                      aggre_cases_join[[select_date]],
-         #                       "<br><strong>")
-        #
-       # leafletProxy("map", data = aggre_cases_join)%>%
-      #      addPolygons(fillColor = pal()(log((aggre_cases_join[[select_date]])+1)),
-     #                   layerId = ~NAME,
-    #                    fillOpacity = 1,
-   #                     color = "#BDBDC3",
-  #                      weight = 1,
- #                       popup = country_popup) 
-#    } else {
-     #   #join the two dfs together
-    #    aggre_death_join<- merge(countries,
-   #                              data_countries(),
-  #                               by.x = 'NAME',
- #                                by.y = 'country_names',
-#                                 sort = FALSE)
+        country_popup <- paste0("<strong>State: </strong>",
+                                aggre_cases_join$name,
+                                "<br><strong>",
+                                "Total Cases: ",
+                                aggre_cases_join[[select_date]],
+                                "<br><strong>")
+        
+        leafletProxy("map", data = aggre_cases_join)%>%
+            addPolygons(fillColor = pal()(log((aggre_cases_join[[select_date]])+1)),
+                        layerId = ~name,
+                        fillOpacity = 1,
+                        color = "#BDBDC3",
+                        weight = 1,
+                        popup = country_popup) 
+    } else {
+       #join the two dfs together
+        aggre_death_join<- merge(states,
+                                 data_countries(),
+                                 by.x = 'name',
+                                 by.y = 'state_names',
+                                 sort = FALSE)
         ##pop up for polygons
-        #country_popup <- paste0("<strong>Country: </strong>",
-             #                   aggre_death_join$NAME,
-            #                   "<br><strong>",
-           #                     "Total Deaths: ",
-          #                      aggre_death_join[[select_date]],
-         #                       "<br><strong>")
-        #
-        #leafletProxy("map", data = aggre_death_join)%>%
-        #    addPolygons(fillColor = pal()(log((aggre_death_join[[select_date]])+1)),
-       #                 layerId = ~NAME,
-      #                  fillOpacity = 1,
-     #                   color = "#BDBDC3",
-    #                    weight = 1,
-   #                     popup = country_popup)
-  #      
- #       }
-#    })
+        country_popup <- paste0("<strong>State: </strong>",
+                                aggre_death_join$name,
+                               "<br><strong>",
+                                "Total Deaths: ",
+                                aggre_death_join[[select_date]],
+                                "<br><strong>")
+        
+        leafletProxy("map", data = aggre_death_join)%>%
+            addPolygons(fillColor = pal()(log((aggre_death_join[[select_date]])+1)),
+                      layerId = ~name,
+                        fillOpacity = 1,
+                        color = "#BDBDC3",
+                        weight = 1,
+                       popup = country_popup)
+        
+        }
+    })
 
 # Tab Panel 5 - Ranking Table ###########
 table_data <- model_data_copy
