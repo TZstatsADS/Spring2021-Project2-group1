@@ -236,10 +236,12 @@ shinyUI(navbarPage(title = 'COVID-19',
 </ol>
 <p><a href="https://ceefluz.shinyapps.io/radar/?_ga=2.75165649.232392962.1613305764-1893296810.1610943411"><span style="font-weight: 400;">https://ceefluz.shinyapps.io/radar/?_ga=2.75165649.232392962.1613305764-1893296810.1610943411</span></a></p>
 <p><a href="https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html"><span style="font-weight: 400;">https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html</span></a></p>'
-                              
-           
-                            ))
-                   
+                            )),
+                   #Tab panel 5 - Ranking Table
+                   tabPanel("Ranking Table",icon = icon("thumbs-up")
+                   )
+                
+                            
 ))
 
 

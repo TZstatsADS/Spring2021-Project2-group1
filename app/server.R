@@ -25,7 +25,7 @@ library(ggplot2)
 #global.r will enable us to get new data everyday
 #update data with automated script
 source("global.R") 
-#load('./output/covid-19.RData')
+load('./output/covid-19.RData')
 shinyServer(function(input, output) {
 #----------------------------------------
 #tab panel 1 - Home Plots
@@ -149,5 +149,6 @@ observe({
         }
     })
 
+# Tab Panel 5 - Ranking Table
 
 })
