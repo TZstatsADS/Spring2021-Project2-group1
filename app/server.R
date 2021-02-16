@@ -21,11 +21,35 @@ library(shiny)
 library(shinythemes)
 library(plotly)
 library(ggplot2)
+library(lubridate)
+library(zoo)
+library(highcharter)
+library(leaflet.extras)
+library(shinydashboard)
+library(RColorBrewer)
+library(htmltools)
+library(maps)
+library(viridisLite)
+library(shinyWidgets)
+library(scales)
+library(geosphere)
+library(gganimate)
+library(ggthemes)
+library(readr)
+library(openair)
+library(ggdark)
+library(DT)
+library(stringr)
+library(rvest)
+library(robotstxt)
 #can run RData directly to get the necessary date for the app
 #global.r will enable us to get new data everyday
 #update data with automated script
-source("global.R") 
-load('./output/covid-19.RData')
+source("global.R")
+
+# Notice! Not sure if we need the following "load" function.
+#load('./output/covid-19.RData')
+
 shinyServer(function(input, output) {
 #----------------------------------------
 #tab panel 1 - Home Plots
@@ -150,8 +174,25 @@ observe({
         }
     })
 
-# Tab Panel 5 - Ranking Table
+# Tab Panel 5 - Ranking Table ###########
 table_data <- model_data_copy
+########## YOUR CODE STARTS HERE #############
 
+
+
+
+
+########## YOUR CODE ENDS HERE #############
+# Panel 5 ends ##############
+
+
+############# Tab Panel 6 - Statistical Graphs (Finish if having time, not necessary) #########
+table_data <- model_data_copy
+########## YOUR CODE STARTS HERE #############
+
+
+
+########## YOUR CODE ENDS HERE #############
+############ Panel 6 ends #######################
 
 })

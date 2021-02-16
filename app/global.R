@@ -77,10 +77,6 @@ if (!require("DT")) {
   install.packages("DT")
   library(DT)
 }
-if (!require("ggdark")) {
-  install.packages("ggdark")
-  library(ggdark)
-}
 if (!require("openair")) {
   install.packages("openair")
   library(openair)
@@ -149,10 +145,6 @@ if (!require("plotly")) {
   install.packages("plotly")
   library(plotly)
 }
-
-  
-  
-
 
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
@@ -241,7 +233,12 @@ data_transformer_income <- function(df) {
   return(aggre_df)
 }
   
-data_transformer_variant
+data_transformer_variant <- function(df) {
+  df <- data_cooker_variants(df)
+  not_select_cols <- c("Range")
+  aggre_df <- df %>% select(-one_of(not_select_cols)) 
+  return(aggre_df)
+}
 
 data_transformer_case <- function(df) {
   #################################################################
@@ -368,7 +365,9 @@ if(file.exists(output_shapefile_filepath)){
                        verbose = FALSE)
   save(states, file=output_shapefile_filepath)
 }
-######## Draw Map function Bigins
+################################################
+######## Draw Map function Bigins ############
+################################################
 draw_map = function(df, indicator){
   mapusa = maps::map("state", fill = TRUE, plot = FALSE)
   
@@ -422,7 +421,7 @@ draw_map = function(df, indicator){
               title = NULL,
               position = "bottomright")
 }
-###### Draw Map function Ends
+################# Draw Map function Ends #################
 # Reference of Group 5, Fall 2020
 
 

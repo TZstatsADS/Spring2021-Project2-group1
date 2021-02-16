@@ -21,6 +21,27 @@ library(shiny)
 library(shinythemes)
 library(plotly)
 library(ggplot2)
+library(lubridate)
+library(zoo)
+library(highcharter)
+library(leaflet.extras)
+library(shinydashboard)
+library(RColorBrewer)
+library(htmltools)
+library(maps)
+library(viridisLite)
+library(shinyWidgets)
+library(scales)
+library(geosphere)
+library(gganimate)
+library(ggthemes)
+library(readr)
+library(openair)
+library(ggdark)
+library(DT)
+library(stringr)
+library(rvest)
+library(robotstxt)
 #load('./output/covid-19.RData')
 shinyUI(navbarPage(title = 'COVID-19',
                    fluid = TRUE,
@@ -238,9 +259,21 @@ shinyUI(navbarPage(title = 'COVID-19',
 <p><a href="https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html"><span style="font-weight: 400;">https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html</span></a></p>'
                             )),
                    #Tab panel 5 - Ranking Table
-                   tabPanel("Ranking Table",icon = icon("thumbs-up")
-                   )
-                
+                   tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
+                   ############## YOUR CODE STARTS HERE ##############
+          
+          
+          
+                   ##########  ### YOUR CODE ENDS HERE ##############
+                   ),
+                    #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)
+                   tabPanel("Statistical Graphs",icon = icon("weibo"),  #Need a "," here
+                   ############## YOUR CODE STARTS HERE ##############
+                   
+                   
+                   
+                   ############## YOUR CODE ENDS HERE ################
+          )
                             
 ))
 
