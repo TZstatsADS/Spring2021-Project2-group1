@@ -56,9 +56,7 @@ if (!require("ggplot2")) {
 if (!require("viridis")) {
   install.packages("viridis")
   library(viridis)
-  
 }
-
 if (!require("rvest")) {
   install.packages("rvest")
   library(rvest)
@@ -71,6 +69,90 @@ if (!require("stringr")) {
   install.packages("stringr")
   library(stringr)
 }
+if (!require("ggdark")) {
+  install.packages("ggdark")
+  library(ggdark)
+}
+if (!require("DT")) {
+  install.packages("DT")
+  library(DT)
+}
+if (!require("ggdark")) {
+  install.packages("ggdark")
+  library(ggdark)
+}
+if (!require("openair")) {
+  install.packages("openair")
+  library(openair)
+}
+if (!require("readr")) {
+  install.packages("readr")
+  library(readr)
+}
+if (!require("ggthemes")) {
+  install.packages("ggthemes")
+  library(ggthemes)
+}
+if (!require("gganimate")) {
+  install.packages("gganimate")
+  library(gganimate)
+}
+if (!require("geosphere")) {
+  install.packages("geosphere")
+  library(geosphere)
+}
+if (!require("scales")) {
+  install.packages("scales")
+  library(scales)
+}
+if (!require("shinyWidgets")) {
+  install.packages("shinyWidgets")
+  library(shinyWidgets)
+}
+if (!require("viridisLite")) {
+  install.packages("viridisLite")
+  library(viridisLite)
+}
+if (!require("maps")) {
+  install.packages("maps")
+  library(maps)
+}
+if (!require("htmltools")) {
+  install.packages("htmltools")
+  library(htmltools)
+}
+if (!require("RColorBrewer")) {
+  install.packages("RColorBrewer")
+  library(RColorBrewer)
+}
+if (!require("shinydashboard")) {
+  install.packages("shinydashboard")
+  library(shinydashboard)
+}
+if (!require("leaflet.extras")) {
+  install.packages("leaflet.extras")
+  library(leaflet.extras)
+}
+if (!require("highcharter")) {
+  install.packages("highcharter")
+  library(highcharter)
+}
+if (!require("zoo")) {
+  install.packages("zoo")
+  library(zoo)
+}
+if (!require("lubridate")) {
+  install.packages("lubridate")
+  library(lubridate)
+}
+if (!require("plotly")) {
+  install.packages("plotly")
+  library(plotly)
+}
+
+  
+  
+
 
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
@@ -286,6 +368,62 @@ if(file.exists(output_shapefile_filepath)){
                        verbose = FALSE)
   save(states, file=output_shapefile_filepath)
 }
+######## Draw Map function Bigins
+draw_map = function(df, indicator){
+  mapusa = maps::map("state", fill = TRUE, plot = FALSE)
+  
+  Names = tibble(State = mapusa$names) %>%
+    group_by(State) %>% mutate(Name = strsplit(State,':')[[1]][1])
+  
+  df = df %>%
+    right_join(Names, by = c('Province_State' = 'Name'))
+  
+  state = c(unlist(df['Province_State']))
+  values <- c(unlist(df['Value']))
+  
+  
+  if(indicator %in% colnames(data)[c(11,14,18)])
+    labels = sprintf("%s<br/>%s:%g%%", str_to_upper(state), indicator, signif(values,4))
+  else
+    labels = sprintf("%s<br/>%s:%g", str_to_upper(state), indicator, signif(values,4))
+  labels = labels %>%
+    lapply(htmltools::HTML)
+  pal <- colorBin("YlOrRd", domain = values, bins = 9)
+  
+  print(labels)
+  
+  leaflet(data = mapusa) %>% 
+    setView(-96, 37.8, 5) %>%
+    addTiles() %>%
+    addResetMapButton() %>% 
+    addPolygons(
+      fillColor = pal(values),
+      weight = 2, 
+      opacity = 1, 
+      color='white',
+      dashArray = 3,
+      fillOpacity = .7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = .75,
+        bringToFront = T
+      ),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", 'padding' = "10px 15px"),
+        textsize = "15px",
+        direction = "auto")
+    ) %>%  
+    addLegend(pal = pal,
+              values = values,
+              opacity = 0.85,
+              title = NULL,
+              position = "bottomright")
+}
+###### Draw Map function Ends
+# Reference of Group 5, Fall 2020
 
 
 #make a copy of aggre_cases dataframe

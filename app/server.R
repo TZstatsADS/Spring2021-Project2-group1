@@ -116,6 +116,7 @@ observe({
                                 "Total Cases: ",
                                 aggre_cases_join[[select_date]],
                                 "<br><strong>")
+        
         leafletProxy("map", data = aggre_cases_join)%>%
             addPolygons(fillColor = pal()(log((aggre_cases_join[[select_date]])+1)),
                         layerId = ~NAME,
@@ -150,5 +151,7 @@ observe({
     })
 
 # Tab Panel 5 - Ranking Table
+table_data <- model_data_copy
+
 
 })
