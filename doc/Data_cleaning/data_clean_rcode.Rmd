@@ -1,0 +1,194 @@
+---
+title: "Data Clean Codes"
+author: "Weiwei Song"
+output: html_notebook
+---
+This is an R Markdown Files which specifies how the data of 14 different Indicators for resillence ranking table generated from original multiple csv files. 
+The whole model building process are done by WS and YT, including the data searching, data cleaning, the methodology analysis, reactive table building. 
+-YT  took charge of 
+   search and clean data for several indicators
+   edit the methodology_analysis.txt
+   optimizes the appearance of reactive table. 
+-WS is responsible to 
+  collect and clean data for several indicators
+  editing the R markdown file data_clean_codes.rmd
+  write the codes for the integral part of reactive table(scaled the background color) 
+   
+  
+```{r message=FALSE, warning=TRUE, import,echo=FALSE}
+setwd("../data/raw_model_data")
+library(tidyverse)
+mobility<-read_csv("US_Region_Mobility.csv")
+bed<-read_csv("hospital_beds_USA_v1.csv")
+chron<-read_csv("chronic_respiratory_bystate.csv")
+low<-read_csv("lower_respiratory_infections_mortality_rate_bystate.csv")
+lock<-read_csv("lockdown_bystate.csv")
+fat<-read_csv("obesity_bystate.csv")
+HDI<-read_csv("HDI_USA_2018.csv")
+healthcare<-read_csv("healthcare_coverage_rank_2018.csv")
+GDP_prediction<-read_csv("US_GDP_prediction_revised.csv")
+Dec_data<-read_csv("12-31-2020.csv")
+Jan_data<-read_csv("01-31-2021.csv")
+vacper100 <- read_csv("us-state-covid-vaccines-per-100.20210212214810444.csv")
+vacused <- read_csv("us-share-covid-19-vaccine-doses-used.csv")
+vacshare<-read_csv("us-covid-19-share-people-vaccinated.20210212215912385.csv")
+total_vac<-read_csv("us-covid-19-total-people-vaccinated.csv")
+state_name<-read_csv("state.csv")
+```
+
+```{r,Mobility}
+#Mobility: take average equally weighted 
+mobility_bystate<-
+  mobility%>%mutate(sum_mobility=retail_and_recreation_percent_change_from_baseline+
+                  grocery_and_pharmacy_percent_change_from_baseline+
+                  parks_percent_change_from_baseline+
+                  transit_stations_percent_change_from_baseline+
+                  workplaces_percent_change_from_baseline+
+                  residential_percent_change_from_baseline
+                  ) %>%select(sub_region_1,sum_mobility)%>%
+  drop_na()%>%
+  group_by(sub_region_1)%>%
+  summarise(avg=mean(sum_mobility))%>%
+  rename(State=sub_region_1,
+         Mobility=avg)%>%
+ select(State,Mobility)%>%
+  drop_na()
+```
+
+```{r,HospitalBeds}
+
+HospitalBeds<-bed%>%
+  group_by(state)%>%
+  summarise(avg=mean(beds))%>%
+  ungroup()%>%
+  rename(HospitalBeds=avg)%>%
+  left_join(.,state_name)%>%
+  drop_na()%>%
+  select(State,HospitalBeds)
+
+```
+
+```{r,Vaccines}
+
+vac100<-vacper100%>%filter(Date=='2021/2/11')
+vacused2<-vacused%>%filter(Date=='2021/2/11')
+vacshare2<-vacshare%>%filter(Date=='2021/2/11')
+tvac<-total_vac%>%filter(Date=='2021/2/11')
+vaccine<-vac100%>%left_join(vacused2,by="Entity")
+vaccine<-vaccine%>%left_join(vacshare2,by="Entity")
+vaccine<-vaccine%>%left_join(tvac,by="Entity")
+vaccine<-vaccine%>%select(Entity, people_vaccinated_per_hundred, total_vaccinations_per_hundred,
+                 share_doses_used)
+vaccine<-rename(vaccine, c(State=Entity))
+```
+
+
+```{r warning=FALSE}
+HDI<-HDI%>%
+  rename(State=Region,HDI=`Sub-national HDI`)%>%
+  filter(State!="Total")%>%
+  select(State, HDI)
+
+Rank_health<-healthcare%>%
+  transmute(State=STATE,Rank_health=RANK)%>%
+drop_na()
+
+lock<-lock%>%
+  rename(State=RegionName)%>%
+  drop_na()
+
+GDP_prediction<-GDP_prediction%>%
+  transmute(State,GSP=`Gross State Product`)%>%
+  drop_na()
+  
+
+chron<-chron%>%
+  rename(State=Location,chronic_mortality_rate=`Chronic respiratory diseases mortality rate`)%>%
+  drop_na()
+
+
+low<-low%>%
+  rename(State=Location,chronic_infection_rate=`Lower respiratory infections mortality rate`)%>%
+  drop_na()
+
+```
+
+```{r,covid_columns}
+Dec_data<-Dec_data%>%
+  transmute(State=Province_State,Confirmed_Dec=Confirmed,Deaths_Dec=Deaths)%>%
+  group_by(State)%>%
+  summarise_all(sum)
+
+Jan_data<-Jan_data%>%
+  transmute(State=Province_State,Confirmed_Jan=Confirmed,Total_Deaths=Deaths,
+            Positive_Test_Rate=Confirmed_Jan/Total_Test_Results)%>%
+  group_by(State)%>%
+  summarise_all(sum)
+Covid_columns<-Jan_data%>%
+left_join(.,Dec_data,by="State")%>%
+  transmute(State,One_Month_Cases=Confirmed_Jan-Confirmed_Dec,
+            One_month_fatality_rate=(Total_Deaths-Deaths_Dec)/Total_Deaths,
+            Total_Deaths,Positive_Test_Rate)%>%
+  drop_na()
+
+```
+
+```{r, all the indictors}
+data_indictors<-Covid_columns%>%
+  left_join(.,low,by="State")%>%
+  left_join(.,chron,by="State")%>%
+  left_join(.,GDP_prediction)%>%
+  left_join(.,lock,by="State")%>%
+  left_join(.,mobility_bystate,by="State")%>%
+  left_join(.,Rank_health,by="State")%>%
+  drop_na()%>%
+  left_join(.,vaccine,by="State")%>%
+  left_join(.,HospitalBeds,by="State")%>%
+  left_join(.,HDI,by="State")%>%
+  left_join(fat)%>%
+  rename(assess_to_vaccines_per_hundred=total_vaccinations_per_hundred,
+         doses_per_hundred=people_vaccinated_per_hundred,lockdown_severity=lockdown)
+summary(data_indictors)
+write_csv(data_indictors,"../data/cleaned_model_data/data_indictors.csv")
+
+```
+
+```{r, max_min method}
+model_data<-data_indictors
+#max-min method function 
+I<- function(A){
+  min_value<-min(A)
+  max_value<-max(A)
+  score<-matrix(NA,nrow=length(A))
+  for (i in 1:length(A)){
+    V<-A[i]
+    score[i]<-(V-min_value)/(max_value-min_value)}
+  return(score)
+}
+#use sapply() to all columns 
+scale_indicators<-data.frame(sapply(model_data[,-1],I))
+scale_indicators$State<-model_data$State
+scale_indicators<-scale_indicators%>%
+  relocate(State)%>%
+  mutate(One_Month_Cases=1-One_Month_Cases,
+         One_month_fatality_rate=1-One_month_fatality_rate,
+         Total_Deaths=1-Total_Deaths,
+         Rank_health=1-Rank_health,
+         Positive_Test_Rate=1-Positive_Test_Rate,
+         lockdown_severity=1-lockdown_severity,
+         chronic_infection_rate
+=1-chronic_infection_rate,
+         chronic_mortality_rate=1-chronic_mortality_rate, obesity_prevalence=1-obesity_prevalence
+
+)
+
+scale_indicators$Score <- 100*rowMeans(x = scale_indicators[,-1])
+scale_indicators$Rank <- 51-rank(scale_indicators$Score)
+final_model<-scale_indicators%>%
+  select(State,Score,Rank)%>%
+  left_join(model_data,.,by="State")
+write_csv(scale_indicators,"../data/cleaned_model_data/scale_indictors_of_model.csv")
+write_csv(final_model,"../data/cleaned_model_data/final_model.csv")
+
+```
+
