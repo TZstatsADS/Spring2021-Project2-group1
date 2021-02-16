@@ -261,7 +261,7 @@ shinyUI(navbarPage(title = 'COVID-19',
 <p><a href="https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html"><span style="font-weight: 400;">https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html</span></a></p>'
                             )),
                    #Tab panel 5 - Ranking Table
-                   tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
+                   tabPanel("Ranking Table",icon = icon("thumbs-up")  #Need a "," here
                    ############## YOUR CODE STARTS HERE ##############
           
           
@@ -269,13 +269,20 @@ shinyUI(navbarPage(title = 'COVID-19',
                    ##########  ### YOUR CODE ENDS HERE ##############
                    ),
                     #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)
-                   tabPanel("Statistical Graphs",icon = icon("weibo"),  #Need a "," here
+                   tabPanel("Statistical Graphs",icon = icon("weibo")  #Need a "," here
                    ############## YOUR CODE STARTS HERE ##############
                    
                    
                    
                    ############## YOUR CODE ENDS HERE ################
-          )
+          ),
+          # Tab Panel 7 - Model Map
+          tabPanel("Model Map", icon= icon("aws"))
+          ############## YOUR CODE STARTS HERE ##############
+          
+          
+          
+          ############## YOUR CODE ENDS HERE ################
                             
 ))
 

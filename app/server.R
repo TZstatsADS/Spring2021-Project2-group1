@@ -101,7 +101,7 @@ output$case_overtime <- renderPlotly({
     return(case_fig)
         })
 #----------------------------------------
-#tab panel 2 - Maps
+#tab panel 2 - Case/Death Map
 
 data_countries <- reactive({
     if(!is.null(input$choices)){
@@ -194,5 +194,12 @@ table_data <- model_data_copy
 
 ########## YOUR CODE ENDS HERE #############
 ############ Panel 6 ends #######################
+
+
+######## Panel 7 Model Map #########
+
+
+
+########## Panel 7 Ends #######
 
 })
