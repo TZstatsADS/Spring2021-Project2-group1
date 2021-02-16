@@ -54,7 +54,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                             fluidPage(
                               fluidRow(
                                 column(12,
-                                       h1("Global Cases overview across time"),
+                                       h1("State-Wise Cases overview across time"),
                                        fluidRow(
                                          #select the date until now
                                          column(6,
@@ -261,9 +261,14 @@ shinyUI(navbarPage(title = 'COVID-19',
 <p><a href="https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html"><span style="font-weight: 400;">https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html</span></a></p>'
                             )),
                    #Tab panel 5 - Ranking Table
-                   tabPanel("Ranking Table",icon = icon("thumbs-up")  #Need a "," here
+                   tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
                    ############## YOUR CODE STARTS HERE ##############
-          
+                   fluidPage(
+                     titlePanel("reactable example"),
+                     reactableOutput("table"),
+                     tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                     tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                   )
           
           
                    ##########  ### YOUR CODE ENDS HERE ##############
