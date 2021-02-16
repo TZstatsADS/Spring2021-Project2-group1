@@ -341,6 +341,8 @@ aggre_GDP <- as.data.frame(data_transformer_GDP(GDP))
 
 # get aggregate variants
 aggre_variants <- as.data.frame(data_transformer_variants(variants))
+# get useful variants
+aggre_variants_use <- aggregate(data = aggre_variants_copy, Cases ~ State, sum)
 # get aggregate personal income
 aggre_income <- as.data.frame(data_transformer_income(income))
 
@@ -348,6 +350,20 @@ aggre_income <- as.data.frame(data_transformer_income(income))
 date_choices <- as.Date(colnames(aggre_cases),format = '%Y-%m-%d')
 #define state_names
 state_names_choices <- rownames(aggre_cases)
+
+aggre_vaccine_use <- aggre_vaccine_copy[,c(1,4)]
+aggre_GDP_use <- aggre_GDP_copy[2:60,c(1,64)]
+names(aggre_GDP_use) <- c("State","GDP")
+names(aggre_vaccine_use) <- c("State", "Vaccine_Percentage")
+aggre_income_use <- aggre_income_copy[2:60,c(1,292)]
+names(aggre_income_use) <- c("State","Personal_Income")
+names(aggre_variants_use) <- c("State", "Variants_Cases")
+
+##### MERGE MAP DATA ! ########
+map_data <- merge(model_data_copy, aggre_GDP_use)
+map_data <- merge(map_data, aggre_vaccine_use)
+map_data <- merge(map_data, aggre_variants_use)
+map_data <- merge(map_data, aggre_income_use)
 
 #Download the spatial polygons dataframe in this link
 # https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-countries-2/
