@@ -56,9 +56,7 @@ if (!require("ggplot2")) {
 if (!require("viridis")) {
   install.packages("viridis")
   library(viridis)
-  
 }
-
 if (!require("rvest")) {
   install.packages("rvest")
   library(rvest)
@@ -71,6 +69,90 @@ if (!require("stringr")) {
   install.packages("stringr")
   library(stringr)
 }
+if (!require("ggdark")) {
+  install.packages("ggdark")
+  library(ggdark)
+}
+if (!require("DT")) {
+  install.packages("DT")
+  library(DT)
+}
+if (!require("ggdark")) {
+  install.packages("ggdark")
+  library(ggdark)
+}
+if (!require("openair")) {
+  install.packages("openair")
+  library(openair)
+}
+if (!require("readr")) {
+  install.packages("readr")
+  library(readr)
+}
+if (!require("ggthemes")) {
+  install.packages("ggthemes")
+  library(ggthemes)
+}
+if (!require("gganimate")) {
+  install.packages("gganimate")
+  library(gganimate)
+}
+if (!require("geosphere")) {
+  install.packages("geosphere")
+  library(geosphere)
+}
+if (!require("scales")) {
+  install.packages("scales")
+  library(scales)
+}
+if (!require("shinyWidgets")) {
+  install.packages("shinyWidgets")
+  library(shinyWidgets)
+}
+if (!require("viridisLite")) {
+  install.packages("viridisLite")
+  library(viridisLite)
+}
+if (!require("maps")) {
+  install.packages("maps")
+  library(maps)
+}
+if (!require("htmltools")) {
+  install.packages("htmltools")
+  library(htmltools)
+}
+if (!require("RColorBrewer")) {
+  install.packages("RColorBrewer")
+  library(RColorBrewer)
+}
+if (!require("shinydashboard")) {
+  install.packages("shinydashboard")
+  library(shinydashboard)
+}
+if (!require("leaflet.extras")) {
+  install.packages("leaflet.extras")
+  library(leaflet.extras)
+}
+if (!require("highcharter")) {
+  install.packages("highcharter")
+  library(highcharter)
+}
+if (!require("zoo")) {
+  install.packages("zoo")
+  library(zoo)
+}
+if (!require("lubridate")) {
+  install.packages("lubridate")
+  library(lubridate)
+}
+if (!require("plotly")) {
+  install.packages("plotly")
+  library(plotly)
+}
+
+  
+  
+
 
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
