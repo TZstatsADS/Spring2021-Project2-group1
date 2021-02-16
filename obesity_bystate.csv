@@ -1,0 +1,56 @@
+State,obesity_prevalence
+Alabama,33.5
+Alaska,30.1
+Arizona,27.6
+Arkansas,35.6
+California,23.9
+Colorado,21.6
+Connecticut,26.1
+Delaware,32.3
+District of Columbia,11.4
+Florida,26.5
+Georgia,30.1
+Guam,27.7
+Hawaii,18.3
+Idaho,28.4
+Illinois,30.9
+Indiana,33.9
+Iowa,35.3
+Kansas,33.7
+Kentucky,35.8
+Louisiana,33
+Maine,30.4
+Maryland,28.9
+Massachusetts,25.8
+Michigan,32.8
+Minnesota,29.5
+Mississippi,35.7
+Missouri,33.1
+Montana,25.8
+Nebraska,33.3
+Nevada,26.9
+New Hampshire,30.2
+New Jersey,Insufficient data*
+New Mexico,25.1
+New York,26.4
+North Carolina,29.9
+North Dakota,34.1
+Ohio,33.6
+Oklahoma,35.3
+Oregon,29
+Pennsylvania,31.3
+Puerto Rico,31.3
+Rhode Island,28.2
+South Carolina,31.7
+South Dakota,30.2
+Tennessee,33
+Texas,31.5
+Utah,27
+Vermont,27.6
+Virginia,29.4
+Washington,29
+West Virginia,39
+Wisconsin,31.9
+Wyoming,28.9
+"*Sample size <50,  the relative standard error (dividing the standard error by the prevalence) ?30%, or no data in a specific year.",
+,
