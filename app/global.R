@@ -286,6 +286,62 @@ if(file.exists(output_shapefile_filepath)){
                        verbose = FALSE)
   save(states, file=output_shapefile_filepath)
 }
+######## Draw Map function Bigins
+draw_map = function(df, indicator){
+  mapusa = maps::map("state", fill = TRUE, plot = FALSE)
+  
+  Names = tibble(State = mapusa$names) %>%
+    group_by(State) %>% mutate(Name = strsplit(State,':')[[1]][1])
+  
+  df = df %>%
+    right_join(Names, by = c('Province_State' = 'Name'))
+  
+  state = c(unlist(df['Province_State']))
+  values <- c(unlist(df['Value']))
+  
+  
+  if(indicator %in% colnames(data)[c(11,14,18)])
+    labels = sprintf("%s<br/>%s:%g%%", str_to_upper(state), indicator, signif(values,4))
+  else
+    labels = sprintf("%s<br/>%s:%g", str_to_upper(state), indicator, signif(values,4))
+  labels = labels %>%
+    lapply(htmltools::HTML)
+  pal <- colorBin("YlOrRd", domain = values, bins = 9)
+  
+  print(labels)
+  
+  leaflet(data = mapusa) %>% 
+    setView(-96, 37.8, 5) %>%
+    addTiles() %>%
+    addResetMapButton() %>% 
+    addPolygons(
+      fillColor = pal(values),
+      weight = 2, 
+      opacity = 1, 
+      color='white',
+      dashArray = 3,
+      fillOpacity = .7,
+      highlight = highlightOptions(
+        weight = 5,
+        color = "#666",
+        dashArray = "",
+        fillOpacity = .75,
+        bringToFront = T
+      ),
+      label = labels,
+      labelOptions = labelOptions(
+        style = list("font-weight" = "normal", 'padding' = "10px 15px"),
+        textsize = "15px",
+        direction = "auto")
+    ) %>%  
+    addLegend(pal = pal,
+              values = values,
+              opacity = 0.85,
+              title = NULL,
+              position = "bottomright")
+}
+###### Draw Map function Ends
+# Reference of Group 5, Fall 2020
 
 
 #make a copy of aggre_cases dataframe
