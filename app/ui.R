@@ -47,65 +47,65 @@ shinyUI(navbarPage(title = 'COVID-19',
                    fluid = TRUE,
                    collapsible = TRUE,
                    #Select whichever theme works for the app 
-                   theme = shinytheme("darkly"),
-                   #--------------------------
-                   #tab panel 1 - Home
-                   tabPanel("Home",icon = icon("home"),
-                            fluidPage(
-                              fluidRow(
-                                column(12,
-                                       h1("Global Cases overview across time"),
-                                       fluidRow(
-                                         #select the date until now
-                                         column(6,
-                                                sliderInput('date','Date Unitl:',
-                                                            #first day of data recording
-                                                            min = as.Date(date_choices[1]),
-                                                            #present day of data recording
-                                                            max = as.Date(tail(date_choices,1)),
-                                                            value = as.Date(date_choices[1]),
-                                                            timeFormat = "%Y-%m-%d",
-                                                            animate = TRUE, step = 5),
-                                                fluidRow(
-                                                  #select the country we want to see the trend
-                                                  column(6, 
-                                                         selectInput('country','Which Country?',
-                                                                     choices = state_names_choices,
-                                                                     selected = 'United States of America')),
-                                                  #select whether want case number in log-scale or not
-                                                  column(6,
-                                                         radioButtons("log_scale", "In Log Scale:",
-                                                                      choices = c(TRUE,FALSE),
-                                                                      selected = FALSE))
-                                                          )
-                                                ),
-                                         #render plotly output
-                                         column(width = 6,
-                                                plotlyOutput('case_overtime'))
-                                              )
-                                        )
-                                      )
-                                    )
-                                ),
+                   theme = shinytheme("yeti"),
+                   # #--------------------------
+                   # #tab panel 1 - Home
+                   # tabPanel("Home",icon = icon("home"),
+                   #          fluidPage(
+                   #            fluidRow(
+                   #              column(12,
+                   #                     h1("Global Cases overview across time"),
+                   #                     fluidRow(
+                   #                       #select the date until now
+                   #                       column(6,
+                   #                              sliderInput('date','Date Unitl:',
+                   #                                          #first day of data recording
+                   #                                          min = as.Date(date_choices[1]),
+                   #                                          #present day of data recording
+                   #                                          max = as.Date(tail(date_choices,1)),
+                   #                                          value = as.Date(date_choices[1]),
+                   #                                          timeFormat = "%Y-%m-%d",
+                   #                                          animate = TRUE, step = 5),
+                   #                              fluidRow(
+                   #                                #select the country we want to see the trend
+                   #                                column(6, 
+                   #                                       selectInput('country','Which Country?',
+                   #                                                   choices = state_names_choices,
+                   #                                                   selected = 'United States of America')),
+                   #                                #select whether want case number in log-scale or not
+                   #                                column(6,
+                   #                                       radioButtons("log_scale", "In Log Scale:",
+                   #                                                    choices = c(TRUE,FALSE),
+                   #                                                    selected = FALSE))
+                   #                                        )
+                   #                              ),
+                   #                       #render plotly output
+                   #                       column(width = 6,
+                   #                              plotlyOutput('case_overtime'))
+                   #                            )
+                   #                      )
+                   #                    )
+                   #                  )
+                   #              ),
                    #--------------------------
                    #tab panel 2 - Map
-                   tabPanel("Maps",icon = icon("map-marker-alt"),div(class = 'outer',
-                            leafletOutput("map", width = "100%", height = "1200"),
-                            absolutePanel(id = "control", class = "panel panel-default", fixed = TRUE, draggable = TRUE,
-                                          top = 300, left = 20, right = "auto", bottom = "auto", width = 250, height = "auto",
-                                          selectInput('choices','Which data to visualize:',
-                                                      choices = c('Cases','Death'),
-                                                      selected = c('Cases')),
-                                          sliderInput('date_map','Input Date:',
-                                                      #first day of data recording
-                                                      min = as.Date(date_choices[1]),
-                                                      #present day of data recording
-                                                      max = as.Date(tail(date_choices,1)),
-                                                      value = as.Date('2020-04-01','%Y-%m-%d'),
-                                                      timeFormat = "%Y-%m-%d",
-                                                      animate = TRUE, step = 5),
-                                          style = "opacity: 0.80"))),
-                   # ----------------------------------
+                   # tabPanel("Maps",icon = icon("map-marker-alt"),div(class = 'outer',
+                   #          leafletOutput("map", width = "100%", height = "1200"),
+                   #          absolutePanel(id = "control", class = "panel panel-default", fixed = TRUE, draggable = TRUE,
+                   #                        top = 300, left = 20, right = "auto", bottom = "auto", width = 250, height = "auto",
+                   #                        selectInput('choices','Which data to visualize:',
+                   #                                    choices = c('Cases','Death'),
+                   #                                    selected = c('Cases')),
+                   #                        sliderInput('date_map','Input Date:',
+                   #                                    #first day of data recording
+                   #                                    min = as.Date(date_choices[1]),
+                   #                                    #present day of data recording
+                   #                                    max = as.Date(tail(date_choices,1)),
+                   #                                    value = as.Date('2020-04-01','%Y-%m-%d'),
+                   #                                    timeFormat = "%Y-%m-%d",
+                   #                                    animate = TRUE, step = 5),
+                   #                        style = "opacity: 0.80"))),
+                   # # ----------------------------------
                    #tab panel 3 - Source
                    tabPanel("Data Source",icon = icon("cloud-download"),
                             HTML(
@@ -261,9 +261,13 @@ shinyUI(navbarPage(title = 'COVID-19',
                    #Tab panel 5 - Ranking Table
                    tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
                    ############## YOUR CODE STARTS HERE ##############
-          
-          
-          
+                   
+                       fluidPage(
+                         titlePanel("reactable example"),
+                         reactableOutput("table"),
+                         tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                         tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                       )
                    ##########  ### YOUR CODE ENDS HERE ##############
                    ),
                     #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)
