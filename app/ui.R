@@ -47,7 +47,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                    fluid = TRUE,
                    collapsible = TRUE,
                    #Select whichever theme works for the app 
-                   theme = shinytheme("darkly"),
+                   theme = shinytheme("yeti"),
                    #--------------------------
                    #tab panel 1 - Home
                    tabPanel("Home",icon = icon("home"),
@@ -101,10 +101,12 @@ shinyUI(navbarPage(title = 'COVID-19',
                                                       min = as.Date(date_choices[1]),
                                                       #present day of data recording
                                                       max = as.Date(tail(date_choices,1)),
-                                                      value = as.Date('2020-04-01','%Y-%m-%d'),
-                                                      timeFormat = "%Y-%m-%d",
-                                                      animate = TRUE, step = 5),
+                                                     value = as.Date('2020-04-01','%Y-%m-%d'),
+                                                    timeFormat = "%Y-%m-%d",
+                                                     animate = TRUE, step = 5),
                                           style = "opacity: 0.80"))),
+  
+
                    # ----------------------------------
                    #tab panel 3 - Source
                    tabPanel("Data Source",icon = icon("cloud-download"),
