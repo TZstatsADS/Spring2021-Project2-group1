@@ -316,8 +316,8 @@ income <- read.csv("../data/raw_map_data/personal_income_data.csv")
 # get vaccination data
 #get the updated vaccination data by states
 web_scrape <- read_html("https://www.beckershospitalreview.com/public-health/states-ranked-by-percentage-of-covid-19-vaccines-administered.html")
-write_html(web_scrape, "../data/raw_map_data/Vaccination_Rates.html")
-VR <- read_html('../data/raw_map_data/Vaccination_Rates.html')
+write_html(web_scrape, "./output/Vaccination_Rates.html")
+VR <- read_html("./output/Vaccination_Rates.html")
 State <- VR %>% html_nodes("ol") %>% html_nodes("li") %>% html_nodes("strong") %>% html_text()
 state_data = VR %>% html_nodes("ol") %>% html_nodes("li") %>% html_text()
 Distributed = rep(NA,50)
