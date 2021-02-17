@@ -89,7 +89,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                 ),
                    #--------------------------
                    #tab panel 2 - Map
-                   tabPanel("Maps",icon = icon("map-marker-alt"),div(class = 'outer',
+                   tabPanel("Case & Death Map",icon = icon("map-marker-alt"),div(class = 'outer',
                             leafletOutput("map", width = "100%", height = "1200"),
                             absolutePanel(id = "control", class = "panel panel-default", fixed = TRUE, draggable = TRUE,
                                           top = 300, left = 20, right = "auto", bottom = "auto", width = 250, height = "auto",
@@ -366,13 +366,25 @@ shinyUI(navbarPage(title = 'COVID-19',
                    ############## YOUR CODE ENDS HERE ################
           ),
           # Tab Panel 7 - Model Map
-          tabPanel("Model Map", icon= icon("aws"))
+          tabPanel("Model Map", icon= icon("aws")),
           ############## YOUR CODE STARTS HERE ##############
           
           
           
           ############## YOUR CODE ENDS HERE ################
-                            
+          # Tab Panel 8 - About Us
+          tabPanel("About Us",icon = icon("address-book"),
+                   HTML(
+                     ################### Your HTML Starts Here ##################
+                     # Notice the single quote mark: '  //  Put everything between two single-quote marks
+                     '
+                    
+                     
+                     
+                     '
+                     ################### Your HTML Ends Here ##################
+                   ))
+                          
 ))
 
 
