@@ -12,6 +12,8 @@ WS and YY came up with the essential ideas about how to choose indicators for th
 
 JC wrote the big structure of the code, wrote and gathering the code from other members into global.R, ui.R, and server.R; debugged most of the errors from app operations; wrote the code for showing the maps with multiple packages and map scaling data; cleaned data for using in map and 
 
+__________________________
+
 Page Contribution:
 
 Case & Death Map: JC, RZ
@@ -24,5 +26,6 @@ Interactive Trend Plots of Vaccinations: WS, YY
 
 Interactive Trend Plots of Mobility: WS, YY
 
-Basic Case/Death Graph: JC /n
+Basic Case/Death Graph: JC
+
 About: RZ, JC
