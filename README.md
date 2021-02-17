@@ -38,7 +38,7 @@ Term: Spring 2021
 	  lower respiratory infections mortality rate, and obesity prevalence into account. 
 		+ Quality of Life: measuring how a state is reacting towards Covid, and the overall quality of epidemic prevention.Indicators include hospital bed occupancy, mobility, economic growth trends and so on.There is a methodology page to help users better understand the materials and the statistics as well. All this information could be of great help to the government, organizations, and companies.
 
-+ **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. Weiwei and Yutong gathered data needed and focused on building the ranking table and the methodology, and visualizing data. Jingbin and Renyin gathered data about economics, variants and vaccination for all states, cleaned them, and worked on map. Everyone contributed to the app design process.
++ **Contribution statement**: All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. Weiwei and Yutong gathered data needed and focused on building the ranking table and the methodology, and visualizing data. Jingbin and Renyin gathered data about economics, variants and vaccination for all states, cleaned them, and worked on map. Everyone contributed to the app design process.
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
