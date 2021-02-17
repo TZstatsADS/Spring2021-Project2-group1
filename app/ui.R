@@ -89,22 +89,23 @@ shinyUI(navbarPage(title = 'COVID-19',
                                 ),
                    #--------------------------
                    #tab panel 2 - Map
-                   tabPanel("Case & Death Map",icon = icon("map-marker-alt"),div(class = 'outer',
-                            leafletOutput("map", width = "100%", height = "1200"),
-                            absolutePanel(id = "control", class = "panel panel-default", fixed = TRUE, draggable = TRUE,
-                                          top = 300, left = 20, right = "auto", bottom = "auto", width = 250, height = "auto",
-                                          selectInput('choices','Which data to visualize:',
-                                                      choices = c('Cases','Death'),
-                                                      selected = c('Cases')),
-                                          sliderInput('date_map','Input Date:',
-                                                      #first day of data recording
-                                                      min = as.Date(date_choices[1]),
-                                                      #present day of data recording
-                                                      max = as.Date(tail(date_choices,1)),
-                                                     value = as.Date('2020-04-01','%Y-%m-%d'),
-                                                    timeFormat = "%Y-%m-%d",
-                                                     animate = TRUE, step = 5),
-                                          style = "opacity: 0.80"))),
+                   tabPanel("Ranking Map",icon = icon("map-marker-alt"),div(class = 'outer'),
+      
+                             leafletOutput("map", width = "100%", height = "1200")),
+                            # absolutePanel(id = "control", class = "panel panel-default", fixed = TRUE, draggable = TRUE,
+                            #               top = 300, left = 20, right = "auto", bottom = "auto", width = 250, height = "auto",
+                            #               selectInput('choices','Which data to visualize:',
+                            #                           choices = c('Cases','Death'),
+                            #                           selected = c('Cases')),
+                            #               sliderInput('date_map','Input Date:',
+                            #                           #first day of data recording
+                            #                           min = as.Date(date_choices[1]),
+                            #                           #present day of data recording
+                            #                           max = as.Date(tail(date_choices,1)),
+                            #                          value = as.Date('2020-04-01','%Y-%m-%d'),
+                            #                         timeFormat = "%Y-%m-%d",
+                            #                          animate = TRUE, step = 5),
+                            #               style = "opacity: 0.80"))),
   
 
                    # ----------------------------------
@@ -393,7 +394,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                     <p>&nbsp;</p>
                     <p>&nbsp;</p>
                     <h1>About Us</h1>
-                    <p>This COVID-19 US States App is presented by Jingbin Cao, Weiwei Song, Yutong Yang, and Renyin Zhang.&nbsp;</p>
+                    <p>This COVID-19 US States Ranking App is presented by Jingbin Cao, Weiwei Song, Yutong Yang, and Renyin Zhang.&nbsp;</p>
                     <p>&nbsp;</p>
                     <p>&nbsp;</p>
                      '
