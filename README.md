@@ -31,16 +31,14 @@ Term: Spring 2021
 	+ [website]() 
  
 + **Project summary**: 
-In this project, we developed a website with the Shiny app to help users to have a general idea of the pandemic and to understand how each state in the US is performing during the pandemic. Utilizing data about COVID-19 in the US, we created a ranking table and related data analysis to demonstrate the best and worst places to be in during the crisis. Users can use the information provided to gauge and compare the resilience of different states. Also, we have an interactive map that displays COVID-19 cases and deaths which changes over time.
-
-We built the covid resilience ranking for all states using indicators and indexes from 3 main modules:
-	+ Status of Covid Severity: measuring a state’s pandemic severity with 1-month number of cases per 100K, 
-	  1-month fatality rate, total deaths per 1M and cumulative positive test rate.
-	+ Vulnerability: measuring a state’s vulnerability towards Covid-19, taking a state’s vaccinations, chronic respiratory disease mortality rate, \
+	+ In this project, we developed a website with the Shiny app to help users to have a general idea of the pandemic and to understand how each state in the US is performing during the pandemic. Utilizing data about COVID-19 in the US, we created a ranking table and related data analysis to demonstrate the best and worst places to be in during the crisis. Users can use the information provided to gauge and compare the resilience of different states. Also, we have an interactive map that displays COVID-19 cases and deaths which changes over time.
+	+ We built the covid resilience ranking for all states using indicators and indexes from 3 main modules:
+		+ Status of Covid Severity: measuring a state’s pandemic severity with 1-month number of cases per 100K, 1-month fatality rate, total deaths per 1M and cumulative positive test rate.
+		+ Vulnerability: measuring a state’s vulnerability towards Covid-19, taking a state’s vaccinations, chronic respiratory disease mortality rate, \
 	  lower respiratory infections mortality rate, and obesity prevalence into account. 
-	+ Quality of Life: measuring how a state is reacting towards Covid, and the overall quality of epidemic prevention.Indicators include hospital bed occupancy, mobility, economic growth trends and so on.There is a methodology page to help users better understand the materials and the statistics as well. All this information could be of great help to the government, organizations, and companies.
+		+ Quality of Life: measuring how a state is reacting towards Covid, and the overall quality of epidemic prevention.Indicators include hospital bed occupancy, mobility, economic growth trends and so on.There is a methodology page to help users better understand the materials and the statistics as well. All this information could be of great help to the government, organizations, and companies.
 
-+ **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
++ **Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. Weiwei and Yutong gathered data needed and focused on building the ranking table and the methodology, and visualizing data. Jingbin and Renyin gathered data about economics, variants and vaccination for all states, cleaned them, and worked on map. Everyone contributed to the app design process.
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
