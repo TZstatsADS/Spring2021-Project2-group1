@@ -49,45 +49,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                    collapsible = TRUE,
                    #Select whichever theme works for the app 
                    theme = shinytheme("yeti"),
-                   #--------------------------
-                   #tab panel 1 - Basic Case/Death Graph
-                   tabPanel("Basic Case/Death Graph",icon = icon("chart-line"),
-                            fluidPage(
-                              fluidRow(
-                                column(12,
-                                       h1("State-Wise Cases overview across time"),
-                                       fluidRow(
-                                         #select the date until now
-                                         column(6,
-                                                sliderInput('date','Date Unitl:',
-                                                            #first day of data recording
-                                                            min = as.Date(date_choices[1]),
-                                                            #present day of data recording
-                                                            max = as.Date(tail(date_choices,1)),
-                                                            value = as.Date(date_choices[1]),
-                                                            timeFormat = "%Y-%m-%d",
-                                                            animate = TRUE, step = 5),
-                                                fluidRow(
-                                                  #select the country we want to see the trend
-                                                  column(6,
-                                                         selectInput('country','Which State?',
-                                                                     choices = state_names_choices,
-                                                                     selected = 'United States of America')),
-                                                  #select whether want case number in log-scale or not
-                                                  column(6,
-                                                         radioButtons("log_scale", "In Log Scale:",
-                                                                      choices = c(TRUE,FALSE),
-                                                                      selected = FALSE))
-                                                          )
-                                                ),
-                                         #render plotly output
-                                         column(width = 6,
-                                                plotlyOutput('case_overtime'))
-                                              )
-                                        )
-                                      )
-                                    )
-                                ),
+                  
                    #--------------------------
                    #tab panel 2 - Map
                    tabPanel("Case & Death Map",icon = icon("map-marker-alt"),div(class = 'outer',
@@ -301,86 +263,95 @@ shinyUI(navbarPage(title = 'COVID-19',
 <p><strong>Model:</strong></p>
 <p><a href="https://github.com/eparker12/nCoV_tracker"><span style="font-weight: 400;">eparker12/nCoV_tracker: Covid 2019 interactive mapping tool (github.com)</span></a></p>
 <p><a href="https://vac-lshtm.shinyapps.io/ncov_tracker/?_ga=2.212563484.965134741.1612927410-394546439.1597636282#"><span style="font-weight: 400;">COVID-19 tracker (shinyapps.io)</span></a></p>
-<p><span style="font-weight: 400;">&nbsp;</span></p>
-<p><strong>Example:</strong></p>
-<ol>
-<li style="font-weight: 400;"><span style="font-weight: 400;">The pop out window that explains possible applications</span></li>
-</ol>
-<p><a href="https://ceefluz.shinyapps.io/radar/?_ga=2.75165649.232392962.1613305764-1893296810.1610943411"><span style="font-weight: 400;">https://ceefluz.shinyapps.io/radar/?_ga=2.75165649.232392962.1613305764-1893296810.1610943411</span></a></p>
-<p><a href="https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html"><span style="font-weight: 400;">https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html</span></a></p>'
+<p><span style="font-weight: 400;">&nbsp;</span></p>'
                             )),
                    # ----------------------------------
-                   #tab panel 5 - Source
-                   tabPanel("Data Source",icon = icon("cloud-download"),
-                            HTML(
-                              "<h2> Data Source : </h2>
-                              <h4> <p><li><a href='https://github.com/TZstatsADS/Spring2021-Project2-group1'>Our Github Website</a></li></h4>
-                              <h4> <p><li><a href='https://coronavirus.jhu.edu/map.html'>Coronavirus COVID-19 Global Cases map Johns Hopkins University</a></li></h4>
-                              <h4><li>COVID-19 Cases : <a href='https://github.com/CSSEGISandData/COVID-19' target='_blank'>Github Johns Hopkins University</a></li></h4>
-                              <h4><li>State-Wise GDP : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=532&Statistic=1&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
-                              <h4><li>State-Wise Personal Income : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=56&Statistic=10&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
-                              <h4><li>Vaccination : <a href='https://www.beckershospitalreview.com/public-health/states-ranked-by-percentage-of-covid-19-vaccines-administered.html' target='_blank'>Beckershospitalreview</a></li></h4>
-                              <h4><li>Variants : <a href='https://www.cdc.gov/coronavirus/2019-ncov/transmission/variant-cases.html' target='_blank'>CDC.gov</a></li></h4>
-                              <h4><li>Data Using in Our Model: <a href='https://github.com/TZstatsADS/Spring2021-Project2-group1/tree/master/data/cleaned_model_data' target='_blank'>Github Project Data Folder</a></li></h4>
-                              <h4><li>Spatial Polygons : <a href='https://www.naturalearthdata.com/downloads/' target='_blank'> Natural Earth</a></li></h4>
-                              <h4><li>Our Methodology : <a href='https://docs.google.com/document/d/1VLP7hmsPS2AeVN4g0i98FTbXuvfSXi9kY5bHQ-PdZj4/edit?usp=sharing' target='_blank'> Google Doc</a></li></h4>"
-                            )),
-                    
                    #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)
-                   tabPanel("Interactive Trend Plots",icon = icon("balance-scale-left"),  #Need a "," here
+                   tabPanel("Interactive Trend Plots of Vaccinations",icon = icon("hospital"),  #Need a "," here
                             ############## YOUR CODE STARTS HERE ##############
-                          dashboardPage(
-                            dashboardHeader(disable = TRUE),
-                            dashboardSidebar(
-                               sidebarMenu(
-                                  menuItem("Trend with Vaccinations", tabName = "ranking", icon = icon("dashboard")),
-                                  menuItem("Trend with Mobility", icon = icon("clinic-medical"), tabName = "status"))
-                              ),
-                              dashboardBody(
-                                tabItems(
-                                  ##### tab of vaccinations #####
-                                  tabItem(tabName = "Trend of Vaccinations",
-                                          fluidRow(column(12,
-                                                          h3("Interactive Dashboard on Vaccinaitons"),
-                                                          "The following scatterplot gives a comparison between how the number of confirmed cases and the number of deaths were varying
+                            fluidPage(
+                              fluidRow(column(12,
+                                              h3("Interactive Dashboard on Vaccinaitons"),
+                                              "The following scatterplot gives a comparison between how the number of confirmed cases and the number of deaths were varying 
                                                  as the vaccinations are being more and more widely adopted. It therefore shows the importance of the vaccinations as to the epidemic prevention.
                                                  Considering the positive effects of the vaccinations, we include it as a measure of a state's level of healthcare for the construction of the ranking model.
                                                  ")),
-                                          br(),
-                                          pickerInput(inputId="state_dropdown",label='Select up to Five States',
-                                                      choices=unique(states_complete$State),multiple=TRUE,
-                                                      options=list(`max-options`=5),
-                                                      selected='Alabama'
-                                          ),
-                                          plotlyOutput("vaccine_ts",height="800px",width="100%"),
-                                          br(),
-                                          br()
-                                  ),
-                                  ##### tab of mobility #####
-                                  tabItem(tabName = "Trend of Mobility",
-                                          fluidRow(column(12,
-                                                          h3("Interactive Dashboard on Mobility across States"),
-                                                          "The Time Series plot for different categories of mobility
+                              br(),
+                              pickerInput(inputId="state_dropdown",label='Select up to Five States',
+                                          choices=unique(states_complete$State),multiple=TRUE,
+                                          options=list(`max-options`=5),
+                                          selected='Alabama'
+                              ),
+                              plotlyOutput("vaccine_ts",height="800px",width="100%"),
+                              br(),
+                              br()
+                            )
+                   ),
+                   #Tab panel 7 - Statistical Graphs (Finish if having time, not necessary)
+                   tabPanel("Interactive Trend Plots of Mobility",icon = icon("android"),  
+                            ##### tab of mobility #####
+                            fluidPage(
+                              fluidRow(column(12,
+                                              h3("Interactive Dashboard on Mobility across States"),
+                                              "The Time Series plot for different categories of mobility 
                                                  shows the trend of this indicator.
-                                                 Click on the dropdown button
+                                                 Click on the dropdown button 
                                                  to select different states and compare how they differ in mobility features.")),
-                                          br(),
-                                          pickerInput(inputId="state_dropdown",label='Select up to Five States',
-                                                      choices=unique(states_complete$State),multiple=TRUE,
-                                                      options=list(`max-options`=5),
-                                                      selected='Alabama'
-                                          ),
-                                          plotlyOutput("mobi_ts",height="800px",width="100%"),
-                                          br(),
-                                          br()
-                                  )
-
-                                )))
+                              br(),
+                              pickerInput(inputId="state_dropdown",label='Select up to Five States',
+                                          choices=unique(states_complete$State),multiple=TRUE,
+                                          options=list(`max-options`=5),
+                                          selected='Alabama'
+                              ),
+                              plotlyOutput("mobi_ts",height="800px",width="100%"),
+                              br(),
+                              br()
+                            )
+                   ),
+                   #--------------------------
+                   # Basic Case/Death Graph
+                   tabPanel("Basic Case/Death Graph",icon = icon("chart-line"),
+                            fluidPage(
+                              fluidRow(
+                                column(12,
+                                       h1("State-Wise Cases overview across time"),
+                                       fluidRow(
+                                         #select the date until now
+                                         column(6,
+                                                sliderInput('date','Date Unitl:',
+                                                            #first day of data recording
+                                                            min = as.Date(date_choices[1]),
+                                                            #present day of data recording
+                                                            max = as.Date(tail(date_choices,1)),
+                                                            value = as.Date(date_choices[1]),
+                                                            timeFormat = "%Y-%m-%d",
+                                                            animate = TRUE, step = 5),
+                                                fluidRow(
+                                                  #select the country we want to see the trend
+                                                  column(6,
+                                                         selectInput('country','Which State?',
+                                                                     choices = state_names_choices,
+                                                                     selected = 'United States of America')),
+                                                  #select whether want case number in log-scale or not
+                                                  column(6,
+                                                         radioButtons("log_scale", "In Log Scale:",
+                                                                      choices = c(TRUE,FALSE),
+                                                                      selected = FALSE))
+                                                )
+                                         ),
+                                         #render plotly output
+                                         column(width = 6,
+                                                plotlyOutput('case_overtime'))
+                                       )
+                                )
+                              )
+                            )
+                   ),
 
 
 
                    ############## YOUR CODE ENDS HERE ################
-          ),
+          
 
           
           ############## YOUR CODE ENDS HERE ################
@@ -389,7 +360,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                    HTML(
                      ################### Your HTML Code Starts Here ##################
                      # Notice the single quote mark: '  //  Put everything between two single-quote marks
-                     '<h1><strong>What to expect from our website</strong></h1>
+                     "<h1><strong>What to expect from our website</strong></h1>
                     <ul>
                     <li>
                     <h4>We used information about covid-19 in the US to provide an overview about how the states are performing under the pandemic, and under other health conditions in general.</h4>
@@ -400,13 +371,23 @@ shinyUI(navbarPage(title = 'COVID-19',
                     </ul>
                     <h1>&nbsp;</h1>
                     <h1>About the Data</h1>
-                    <p>We used data from ....</p>
+                    <h2> Data Source : </h2>
+                              <h4> <p><li><a href='https://github.com/TZstatsADS/Spring2021-Project2-group1'>Our Github Website</a></li></h4>
+                              <h4> <p><li><a href='https://coronavirus.jhu.edu/map.html'>Coronavirus COVID-19 Global Cases map Johns Hopkins University</a></li></h4>
+                              <h4><li>COVID-19 Cases : <a href='https://github.com/CSSEGISandData/COVID-19' target='_blank'>Github Johns Hopkins University</a></li></h4>
+                              <h4><li>State-Wise GDP : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=532&Statistic=1&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
+                              <h4><li>State-Wise Personal Income : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=56&Statistic=10&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
+                              <h4><li>Vaccination : <a href='https://www.beckershospitalreview.com/public-health/states-ranked-by-percentage-of-covid-19-vaccines-administered.html' target='_blank'>Beckershospitalreview</a></li></h4>
+                              <h4><li>Variants : <a href='https://www.cdc.gov/coronavirus/2019-ncov/transmission/variant-cases.html' target='_blank'>CDC.gov</a></li></h4>
+                              <h4><li>Data Using in Our Model: <a href='https://github.com/TZstatsADS/Spring2021-Project2-group1/tree/master/data/cleaned_model_data' target='_blank'>Github Project Data Folder</a></li></h4>
+                              <h4><li>Spatial Polygons : <a href='https://www.naturalearthdata.com/downloads/' target='_blank'> Natural Earth</a></li></h4>
+                              <h4><li>Our Methodology : <a href='https://docs.google.com/document/d/1VLP7hmsPS2AeVN4g0i98FTbXuvfSXi9kY5bHQ-PdZj4/edit?usp=sharing' target='_blank'> Google Doc</a></li></h4>
                     <p>&nbsp;</p>
                     <p>&nbsp;</p>
                     <h1>About Us</h1>
                     <p>This COVID-19 US States Ranking App is presented by Jingbin Cao, Weiwei Song, Yutong Yang, and Renyin Zhang.&nbsp;</p>
                     <p>&nbsp;</p>
-                    <p>&nbsp;</p>'
+                    <p>&nbsp;</p>"
                      ################### Your HTML Code Ends Here ##################
                    ))
                           

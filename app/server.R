@@ -654,7 +654,8 @@ div(class = "standings",
 ############ Tab Panel 6 - Statistical Graphs (Finish if having time, not necessary) #########
 ######### YOUR CODE STARTS HERE #############
 states1 <- states_complete%>%
-    filter(State%in%c('Alaska','North Dakota','Connecticut','Minnesota','Montana'))
+    filter(State%in%c('Alaska','North Dakota','Connecticut','Minnesota','Montana',
+                      'Washington','Colorado','Utah','Massachusetts'))%>%drop_na()
 
 output$vaccine_ts=renderPlotly({
     p1<-ggplotly(ggplot(states1,aes(x=Date, y=people_vaccinated, color = State,
@@ -762,7 +763,8 @@ output$vaccine_ts=renderPlotly({
 ###### Time series plot for mobility ######
 
 Mobility_all_func <- Mobility_all %>% 
-    filter(State%in%c('Alaska','North Dakota','Connecticut','Minnesota','Montana'))
+    filter(State%in%c('Alaska','North Dakota','Connecticut','Minnesota','Montana',
+                      'Washington','Colorado','Utah','Massachusetts'))
 
 output$mobi_ts=renderPlotly({
     p1<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=retail_and_recreation_percent_change_from_baseline, color = State,

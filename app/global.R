@@ -542,11 +542,12 @@ data3<-data[,c("State",human_cols)]
 ### data clean for statistical graphs ####
 Mobility1<-read_csv("./data/graphical_data/2020_US_Region_Mobility_Report.csv")
 Mobility2<-read_csv("./data/graphical_data/applemobilitytrends-2021-02-15.csv")
+
 covid_confirmed<-read_csv("./data/graphical_data/time_series_covid19_confirmed_US.csv")%>%
   rename(State=Province_State)%>%
   select(State,`1/22/20`:`2/15/21`)%>%
   gather(key="Date",value="confirmed_number",-State)%>%
-  filter(Date>='2021-01-13')%>%
+
   group_by(State,Date)%>%
   summarise(total_confirmed = sum(confirmed_number))
 
@@ -554,7 +555,7 @@ covid_death<-read_csv("./data/graphical_data/time_series_covid19_deaths_US.csv")
   rename(State=Province_State)%>%
   select(State,Population,`1/22/20`:`2/15/21`)%>%
   gather(key="Date",value="death",-Population,-State)%>%
-  filter(Date>='2021-01-13')%>%
+
   group_by(State,Date)%>%
   summarise(total_confirmed = sum(death))
 
