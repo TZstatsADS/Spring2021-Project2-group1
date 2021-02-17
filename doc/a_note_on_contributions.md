@@ -1,20 +1,21 @@
-### A Note on Contributions
+Project 2 Shiny App Development
 
-Whenever we have team projects, there are always concerns on unequal contributions from members of a project team. In the ideal world, we are all here to put in our best efforts and learn together. Even in that ideal world, we have different skill sets and preparations, and we will still contribute differently to a project. 
+Team members: Jingbin Cao, Weiwei Song, Yutong Yang, Renyin Zhang
 
-Therefore, you are required to post a *contribution statement* in the root README.md of your GitHub repo. Please beware that your GitHub repo will become public and remain public after the due date of the projects. 
+Summary: We used information about covid-19 in the US to provide an overview about how the states are performing under the pandemic, and under other health conditions in general.
 
-Post your title, team members, project abstract and a contribution statement in the README.md file.  This is a common practice for research scientific journals. 
+All team members approve our work presented in this GitHub repository including this contributions statement. Weiwei(WS), Yutong(YY), Jingbin(JC), Renyin(RZ) gathered the data. WS and YY focused on gathering the data using in the ranking table, building the ranking table, writing the methodology, and visualizing data by graphs. JC and RZ built the map, developed app interface, gathered data about map details, daily cases/deaths, economics, variants and vaccination for all states.
 
-Below is an example. If no contribution statement is provided, we will insert a default statement that goes "**All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement**. "
+Each member contributed to the app design process. 
+WS and YY came up with the essential ideas about how to choose indicators for the model, designed the reactive table and the graphical analysis page together. data searching: adding additional dataset for the three different modules to optimize this model; data cleaning: separating the indicators into two groups, and using package dplyr, tidyr to clean the data; model building: came up with the reason of choosing the indicators, built a feasible model using all the selected indicators; reactive table: used conditional styling to show the evaluations of different indicators in the resilience rank table, integrated it in the shiny app; graphical analysis: figured out which graphs should be chosen to analyze certain indicators, discussed how to make the page layout more attractive. WS merged all the Codes in the data processing process, edit and save them as data_clean_rcode.rmd .The output of this rmd file is finalized as indicators_of_model.csv. Scaled all the indicators using the max-min method, generated the core features of the model: Score and Rank, and finalized this model as final_model_table.csv. YY is the editor of the Model Methodology with a detailed explanation about why we choose these indicators and all the additional data resources as links in google docs, as a manual of guidance to understand this model. WS wrote an integral part of codes to achieve the table functions, and colors different cells using background colors and putting bar charts inside the table cell to show the evaluations for 14 indicators to achieve better visualizations. YY built all the shiny frameworks to achieve the reactive function of these tables in the shiny app and user-interactive the appearance. YY plotted the interactive time series statistical graphs of vaccinations and mobility, which gives an additional reference for the the variations of the variables as well as the review of the model. Renyin wrote the About page and the readme files.
 
----
-Sample project README statement.
+JC wrote the big structure of the code, wrote and gathering the code from other members into global.R, ui.R, and server.R; debugged most of the errors from app operations; wrote the code for showing the maps with multiple packages and map scaling data; cleaned data for using in map and 
 
-Project xxx
-
-Team members: Avi Bond, Comma Deed, En Funn, Gem Hon
-
-Summary: In this project, we developed a new method and improved the classification accuracy for images of cats and dogs to 99.9%
-
-[Contribution Statement] AB, CD, EF and GH designed the study. AB and CD developed baseline classification model for evaluation. EF and GH explored feature engineering for improving the baseline model. AB, EF and GH discussed and designed the model evaluation protocol. CD carried out the computation for model evaluation. All team members contributed to the GitHub repository and prepared the presentation. All team members approve our work presented in our GitHub repository including this contribution statement.
+Page Contribution:
+Case & Death Map: JC, RZ
+Ranking Table: WS, YY
+Methodology: WS & YY for materials, JC for publishing
+Interactive Trend Plots of Vaccinations: WS, YY
+Interactive Trend Plots of Mobility: WS, YY
+Basic Case/Death Graph: JC
+About: RZ, JC
