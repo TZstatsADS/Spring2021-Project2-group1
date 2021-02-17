@@ -101,104 +101,82 @@ output$case_overtime <- renderPlotly({
     return(case_fig)
         })
 #----------------------------------------
-#tab panel 2 - Ranking Map
-ouput$map<-renderLeaflet({
-    leaflet(data=mapStates) %>%
-    setView(-96, 37.8, 4) %>%
-    addTiles() %>%
-    addPolygons(
-        fillColor = pal(map_data$Score),
-        weight = 2,
-        opacity = 1,
-        color = "white",
-        dashArray = "3",
-        fillOpacity = 0.7,
-        highlight = highlightOptions(
-            weight = 5,
-            color = "#666",
-            dashArray = "",
-            fillOpacity = 0.7,
-            bringToFront = TRUE),
-        label = labels,
-        labelOptions = labelOptions(
-            style = list("font-weight" = "normal", padding = "3px 8px"),
-            textsize = "15px",
-            direction = "auto"))})
+#tab panel 2 - Case/Death Map
 
-# data_countries <- reactive({
-#     if(!is.null(input$choices)){
-#         if(input$choices == "Cases"){
-#             return(aggre_cases_copy)
-#             
-#         }else{
-#             return(aggre_death_copy)
-#         }}
-# })
-# 
-# #get the largest number of count for better color assignment
-# maxTotal<- reactive(max(data_countries()%>%select_if(is.numeric), na.rm = T))    
-# ##color palette
-# pal <- reactive(colorNumeric(c("#FFFFFFFF" ,rev(inferno(256))), domain = c(0,log(binning(maxTotal())))))    
-#     
-# output$map <- renderLeaflet({
-#     map <-  leaflet(states) %>%
-#         addProviderTiles("Stadia.Outdoors", options = providerTileOptions(noWrap = TRUE)) %>%
-#         setView(0, 30, zoom = 3) })
-# 
-# observe({
-#     if(!is.null(input$date_map)){
-#         select_date <- format.Date(input$date_map,'%Y-%m-%d')
-#     }
-#     if(input$choices == "Cases"){
-#         #merge the spatial dataframe and cases dataframe
-#         aggre_cases_join <- merge(states,
-#                                   data_countries(),
-#                                   by.x = 'name',
-#                                   by.y = 'state_names',sort = FALSE)
-#         ##pop up for polygons
-#         country_popup <- paste0("<strong>State: </strong>",
-#                                 aggre_cases_join$name,
-#                                 "<br><strong>",
-#                                 "Total Cases: ",
-#                                 aggre_cases_join[[select_date]],
-#                                 "<br><strong>")
-#         
-#         leafletProxy("map", data = aggre_cases_join)%>%
-#             addPolygons(fillColor = pal()(log((aggre_cases_join[[select_date]])+1)),
-#                         layerId = ~name,
-#                         fillOpacity = 1,
-#                         color = "#BDBDC3",
-#                         weight = 1,
-#                         popup = country_popup) 
-#     } else {
-#        #join the two dfs together
-#         aggre_death_join<- merge(states,
-#                                  data_countries(),
-#                                  by.x = 'name',
-#                                  by.y = 'state_names',
-#                                  sort = FALSE)
-#         ##pop up for polygons
-#         country_popup <- paste0("<strong>State: </strong>",
-#                                 aggre_death_join$name,
-#                                "<br><strong>",
-#                                 "Total Deaths: ",
-#                                 aggre_death_join[[select_date]],
-#                                 "<br><strong>")
-#         
-#         leafletProxy("map", data = aggre_death_join)%>%
-#             addPolygons(fillColor = pal()(log((aggre_death_join[[select_date]])+1)),
-#                       layerId = ~name,
-#                         fillOpacity = 1,
-#                         color = "#BDBDC3",
-#                         weight = 1,
-#                        popup = country_popup)
-#         
-#         }
-#     })
+data_countries <- reactive({
+    if(!is.null(input$choices)){
+        if(input$choices == "Cases"){
+            return(aggre_cases_copy)
+            
+        }else{
+            return(aggre_death_copy)
+        }}
+})
+
+#get the largest number of count for better color assignment
+maxTotal<- reactive(max(data_countries()%>%select_if(is.numeric), na.rm = T))    
+##color palette
+pal <- reactive(colorNumeric(c("#FFFFFFFF" ,rev(inferno(256))), domain = c(0,log(binning(maxTotal())))))    
+    
+output$map <- renderLeaflet({
+    map <-  leaflet(states) %>%
+        addProviderTiles("Stadia.Outdoors", options = providerTileOptions(noWrap = TRUE)) %>%
+        setView(0, 30, zoom = 3) })
+
+observe({
+    if(!is.null(input$date_map)){
+        select_date <- format.Date(input$date_map,'%Y-%m-%d')
+    }
+    if(input$choices == "Cases"){
+        #merge the spatial dataframe and cases dataframe
+        aggre_cases_join <- merge(states,
+                                  data_countries(),
+                                  by.x = 'name',
+                                  by.y = 'state_names',sort = FALSE)
+        ##pop up for polygons
+        country_popup <- paste0("<strong>State: </strong>",
+                                aggre_cases_join$name,
+                                "<br><strong>",
+                                "Total Cases: ",
+                                aggre_cases_join[[select_date]],
+                                "<br><strong>")
+        
+        leafletProxy("map", data = aggre_cases_join)%>%
+            addPolygons(fillColor = pal()(log((aggre_cases_join[[select_date]])+1)),
+                        layerId = ~name,
+                        fillOpacity = 1,
+                        color = "#BDBDC3",
+                        weight = 1,
+                        popup = country_popup) 
+    } else {
+       #join the two dfs together
+        aggre_death_join<- merge(states,
+                                 data_countries(),
+                                 by.x = 'name',
+                                 by.y = 'state_names',
+                                 sort = FALSE)
+        ##pop up for polygons
+        country_popup <- paste0("<strong>State: </strong>",
+                                aggre_death_join$name,
+                               "<br><strong>",
+                                "Total Deaths: ",
+                                aggre_death_join[[select_date]],
+                                "<br><strong>")
+        
+        leafletProxy("map", data = aggre_death_join)%>%
+            addPolygons(fillColor = pal()(log((aggre_death_join[[select_date]])+1)),
+                      layerId = ~name,
+                        fillOpacity = 1,
+                        color = "#BDBDC3",
+                        weight = 1,
+                       popup = country_popup)
+        
+        }
+    })
 
 # Tab Panel 5 - Ranking Table ###########
-
-##########  #############
+table_data <- model_data_copy
+########## YOUR CODE STARTS HERE #############
 output$table <- renderReactable({
     reactable(rank_data,
               pagination = FALSE,
@@ -352,7 +330,7 @@ output$table <- renderReactable({
                                         }),
                   #2021 GDP GROWTH FORECAST, positive 
                   Gross_State_Product=human_column(name="2021 GSP GROWTH FORECAST",
-                                                   format=colFormat(digits = 2),
+                                                   format=colFormat(currency = "USD"),
                                                    class = "gsp-cell",
                                                    style = function(value) {
                                                        value
@@ -523,7 +501,7 @@ output$table2 <- renderReactable({
                                            # preserve white space to prevent it from being collapsed by default
                                            style = list(fontFamily = "monospace", whiteSpace = "pre")),
                   respiratory_mortality_rate=colDef(
-                      name="RESPIRATORY MORTALITY RATE",format=colFormat(percent =TRUE,digits=0),
+                      name="respiratory mortality rate",format=colFormat(percent =TRUE,digits=0),
                       cell = function(value) {
                           value <- paste0(format(value * 100, nsmall = 1), "%")
                           value <- format(value, width = 5, justify = "right")
@@ -534,7 +512,7 @@ output$table2 <- renderReactable({
                       # Use the operating system's default monospace font, and
                       # preserve white space to prevent it from being collapsed by default
                       style = list(fontFamily = "monospace", whiteSpace = "pre")),
-                  respiratory_infections_rate=colDef(name="RESPIRATORY INFECTIOUS RATE",
+                  respiratory_infections_rate=colDef(name="respiratory infections rate",
                                                      format=colFormat(percent=TRUE,digits = 0),
                                                      cell = function(value) {
                                                          value <- paste0(format(value * 100, nsmall = 1), "%")
@@ -609,7 +587,7 @@ output$table3 <- renderReactable({
                                      # preserve white space to prevent it from being collapsed by default
                                      style = list(fontFamily = "monospace", whiteSpace = "pre")
                   ),
-                  Gross_State_Product=colDef(name="2021 GSP GROWTH FORECAST",
+                  Gross_State_Product=colDef(name="2021 GDP GROWTH FORECAST",
                                              cell = function(value) {
                                                  width <- paste0(value * 100 / max(data3$Gross_State_Product), "%")
                                                  value <- format(value, big.mark = ",")

@@ -1,0 +1,440 @@
+---
+<<<<<<< Updated upstream
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r table, echo=FALSE}
+library(tidyverse)
+library(reactable)
+library(htmltools)
+library(shiny)
+setwd("~/Downloads/GitHub/Spring2021-Project2-group1/data/cleaned_model_data")
+rank_data<- read.csv("final_model.csv",stringsAsFactors = FALSE)
+scale_data<-read.csv("scale_indictors_of_model.csv",stringsAsFactors = FALSE)
+covid_cols<-c("One_Month_Cases","One_month_fatality_rate","Total_Deaths","Positive_Test_Rate","assess_to_vaccines_per_hundred","doses._per_hundred")
+Human_cols<-c("lockdown_severity","Mobility","Gross_State_Product","Rank_health","HDI")
+risk_cols<-c("Chronic.respiratory.diseases.mortality.rate",
+             "Lower.respiratory.infections.mortality.rate",
+             "obesity_prevalence","HospitalBeds")
+=======
+title: "R table"
+output: html_notebook
+---
+
+
+```{r data, packages}
+library(reactable)
+library(htmltools)
+library(dichromat)
+library(shiny)
+setwd("~/Downloads/GitHub/Spring2021-Project2-group1/data/cleaned_model_data")
+rank_data<- read.csv("final_model4.csv",stringsAsFactors = FALSE)
+
+covid_cols<-c("One_Month_Cases","One_month_fatality_rate","Total_Deaths","Positive_Test_Rate")
+human_cols<-c("lockdown_severity","Mobility","Gross_State_Product","Rank_health","HDI")
+vul_cols<-c("assess_to_vaccines_per_hundred",
+            "doses_per_hundred",
+            "HospitalBeds",
+            "respiratory_mortality_rate",
+             "respiratory_infections_rate",
+             "obesity_prevalence")
+
+rank_data<-rank_data[,c("Rank","State","Score",covid_cols,vul_cols,human_cols)]
+head(rank_data)
+```
+
+```{r}
+>>>>>>> Stashed changes
+make_color_pal <- function(colors, bias = 1) {
+  get_color <- colorRamp(colors, bias = bias)
+  function(x) rgb(get_color(x), maxColorValue = 255)
+}
+<<<<<<< Updated upstream
+covid_color <- make_color_pal(c("#ff2700", "#f8fcf8", "#44ab43"))
+Human_color <- make_color_pal(c("#ff2700", "#f8fcf8", "#44ab43"))
+
+risk_color <- make_color_pal(c("#ffffff", "#f2fbd2", "#c9ecb4", "#93d3ab", "#35b0ab"))
+
+rank_data<-rank_data[,c("Rank","State","Score",covid_cols,Human_cols,risk_cols)]
+tbl<-reactable(rank_data,
+          pagination = FALSE,
+          defaultSorted = "Rank",
+          defaultSortOrder = "asc",
+          showSortIcon = FALSE,
+          minRows = 30,
+          defaultColGroup = colGroup(headerClass = "group-header"),
+  columnGroups = list(
+    colGroup(name = "COVID STATUS", columns = covid_cols),
+    colGroup(name = "QUALITY OF LIFE", columns = Human_cols),
+    colGroup(name = "RISK", columns = risk_cols)
+  ),
+  defaultColDef = colDef(class = "cell", headerClass = "header"),
+  columns = list(
+    Rank=colDef(name="RANK",align="left"),
+=======
+
+good_color <- make_color_pal(colorschemes$BluetoOrange.12, bias = 2)
+
+reactable(rank_data,
+          pagination = FALSE,
+          borderless = FALSE,
+          defaultSorted = "Rank",
+          defaultSortOrder = "asc",
+          showSortIcon = FALSE,
+          minRows = 25,
+          defaultColDef = colDef(
+      align = "center",
+      minWidth = 100
+    ), 
+    theme = reactableTheme(
+      headerStyle = list(
+        "&:hover[aria-sort]" = list(background = "hsl(0, 0%, 96%)"),
+        "&[aria-sort='ascending'], &[aria-sort='descending']" = list(background = "hsl(0, 0%, 96%)"),
+        borderColor = "#555"
+      )),
+          defaultColGroup = colGroup(headerClass = "group-header"),
+  columnGroups = list(
+    colGroup(name = "COVID SEVERITY STATUS", columns = covid_cols),
+    colGroup(name = "QUALITY OF LIFE", columns = human_cols),
+    colGroup(name = "VULNERABIlITY",columns = vul_cols)),
+  columns = list(
+    #RANK
+    Rank=colDef(name="RANK",align="left"),
+    #STATE need to insert pictures 
+>>>>>>> Stashed changes
+    State = colDef(defaultSortOrder = "asc",
+                   minWidth = 200,
+                   headerStyle = list(fontWeight = 700), 
+                  cell = function(value) {
+                  image<-img(src = sprintf("images/%s.png", value), height = "24px", alt =value)
+    tagList(
+      div(style = list(display = "inline-block", width = "45px"), image)
+    ) }),
+<<<<<<< Updated upstream
+    Score=colDef(name="RESILIENCE SCORE",
+                 format=colFormat(digits=0)),
+    One_Month_Cases=colDef(name="1-MONTH CASES",
+                           format=colFormat(separators = TRUE),
+                           maxWidth = 75,
+                           class = "border-left",
+                           style=function(value){
+                             normalized<-1-(value-min(rank_data$One_Month_Cases))/(max(rank_data$One_Month_Cases)-min(rank_data$One_Month_Cases))
+                             color<-covid_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    One_month_fatality_rate=colDef(name="1-MONTH FATALITY RATE",
+                                   format=colFormat(percent = TRUE,digits = 1),
+                           style=function(value){
+                             normalized<-1-(value-min(rank_data$One_month_fatality_rate))/(max(rank_data$One_month_fatality_rate)-min(rank_data$One_month_fatality_rate))
+                             color<-covid_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    Total_Deaths=colDef(name="TOTAL DEATHS",
+                        format=colFormat(separators = TRUE),
+                           style=function(value){
+                             normalized<-1-(value-min(rank_data$Total_Deaths))/(max(rank_data$Total_Deaths)-min(rank_data$Total_Deaths))
+                             color<-covid_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    Positive_Test_Rate=colDef(name="POSITIVE TEST RATE",
+                              format=colFormat(percent = TRUE,digits = 2),
+                              style=function(value){
+                             normalized<-1-(value-min(rank_data$Positive_Test_Rate))/(max(rank_data$Positive_Test_Rate)-min(rank_data$Positive_Test_Rate))
+                             color<-covid_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    assess_to_vaccines_per_hundred=colDef(name="ACCESS TO COVID VACCINES",
+                                          format=colFormat(suffix = "%"),
+                                          style=function(value){
+                             normalized<-(value-min(rank_data$assess_to_vaccines_per_hundred))/(max(rank_data$assess_to_vaccines_per_hundred)-min(rank_data$assess_to_vaccines_per_hundred))
+                             color<-covid_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    doses._per_hundred=colDef(name="DOSES GIVEN PER 100", format=colFormat(suffix = "%"),
+                              style=function(value){
+                             normalized<-(value-min(rank_data$doses._per_hundred))/(max(rank_data$doses._per_hundred)-min(rank_data$doses._per_hundred))
+                             color<-Human_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    lockdown_severity=colDef(name="LOCKDOWN SEVERITY",
+                             format=colFormat(digits =0),
+                             class = "border-left",
+                              style=function(value){
+                             normalized<-1-(value-min(rank_data$lockdown_severity))/(max(rank_data$lockdown_severity)-min(rank_data$lockdown_severity))
+                             color<-Human_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    Mobility=colDef(name="COMMUNITY MOBILITY",format=colFormat(digits = 0,suffix = "%"),
+                     style=function(value){
+                             normalized<-(value-min(rank_data$Mobility))/(max(rank_data$Mobility)-min(rank_data$Mobility))
+                             color<-Human_color(normalized)
+                              list(background = color)
+                               
+                           }),
+  Gross_State_Product=colDef(name="2021 GDP GROWTH FORECAST",
+                              style=function(value){
+                             normalized<-(value-min(rank_data$Gross_State_Product))/(max(rank_data$Gross_State_Product)-min(rank_data$Gross_State_Product))
+                             color<-Human_color(normalized)
+                              list(background = color)
+                               
+                           }),
+  Rank_health=colDef(name="HEALTHCARE RANK",style=function(value){
+                             normalized<-(value-min(rank_data$Rank_health))/(max(rank_data$Rank_health)-min(rank_data$Rank_health))
+                             color<-Human_color(normalized)
+                              list(background = color)
+                               
+                           }),
+    HDI=colDef(name="HUMAN DEVELOPMENT INDEX",style=function(value){
+                             normalized<-(value-min(rank_data$HDI))/(max(rank_data$HDI)-min(rank_data$HDI))
+                             color<-Human_color(normalized)
+                              list(background = color)
+                               
+                           }),
+  Chronic.respiratory.diseases.mortality.rate=colDef(
+    name="",format=colFormat(digits = 1),class = "border-left",
+    style=function(value){
+                             normalized<-1-(value-min(rank_data$Chronic.respiratory.diseases.mortality.rate))/(max(rank_data$Chronic.respiratory.diseases.mortality.rate)-min(rank_data$Chronic.respiratory.diseases.mortality.rate))
+                             color<-risk_color(normalized)
+                              list(background = color)
+                               
+                           }),
+  Lower.respiratory.infections.mortality.rate=colDef(name="",
+                                                     format=colFormat(digits = 1,suffix = "%"),
+                                                     style=function(value){
+                             normalized<-1-(value-min(rank_data$Lower.respiratory.infections.mortality.rate))/(max(rank_data$Lower.respiratory.infections.mortality.rate)-min(rank_data$Lower.respiratory.infections.mortality.rate))
+                             color<-risk_color(normalized)
+                              list(background = color)
+                               
+                           }),
+  obesity_prevalence=colDef(name="OBESITY PREVALENCE",
+                            format=colFormat(digits = 1,suffix = "%"),
+                            style=function(value){
+                             normalized<-1-(value-min(rank_data$obesity_prevalence))/(max(rank_data$obesity_prevalence)-min(rank_data$obesity_prevalence))
+                             color<-risk_color(normalized)
+                              list(background = color)
+                               
+                           }),
+  HospitalBeds=colDef(name="HOSPITAL BEDS",
+                      format=colFormat(digits = 3),
+                      style=function(value){
+                             normalized<-(value-min(rank_data$HospitalBeds))/(max(rank_data$HospitalBeds)-min(rank_data$HospitalBeds))
+                             color<-risk_color(normalized)
+                              list(background = color)
+                               
+                           })),  
+                           rowClass = JS("
+    function(rowInfo, state) {
+      const firstSorted = state.sorted[0]
+      if (firstSorted && firstSorted.id === 'group') {
+        const nextRow = state.pageRows[rowInfo.viewIndex + 1]
+        if (nextRow && rowInfo.row.group !== nextRow.group) {
+          return 'group-last'
+        }
+      }
+    }"
+  ),
+  bordered  = TRUE,
+  class = "standings-table"
+)
+div(class = "standings",
+  div(class = "title",
+    h2("2021 US STATES COVID RESILLENCE RANKING"),
+    "Handling the Covid Era"
+  ),
+  tbl,
+  "Note: A higher Covid Resilience Score indicates a better outcome"
+)
+
+
+```
+
+=======
+    #SCORE need colors 
+    Score=dcolDef(name="RESILIENCE SCORE",
+                  
+                                           style = function(value) {
+          value
+          normalized <- 1-(value - min(rank_data$Score)) / 
+            (max(rank_data$Score) - min(rank_data$Score))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #1-MONTH CASES, negative
+    One_Month_Cases=dcolDef(name="1-MONTH CASES",
+                           format=colFormat(separators = TRUE),
+                            class = "border-left",
+                             style = function(value) {
+          value
+          normalized <- (value - min(rank_data$One_Month_Cases)) / 
+            (max(rank_data$One_Month_Cases) - min(rank_data$One_Month_Cases))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #1-MONTH FATALITY RATE, negative 
+    One_month_fatality_rate=dcolDef(name="1-MONTH FATALITY RATE",
+                                   format=colFormat(percent = TRUE,digits = 1),
+                                   style = function(value) {
+          value
+          normalized <- (value - min(rank_data$One_month_fatality_rate)) / 
+            (max(rank_data$One_month_fatality_rate) - min(rank_data$One_month_fatality_rate))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #TOTAL DEATHS negative
+    Total_Deaths=dcolDef(name="TOTAL DEATHS",
+                        format=colFormat(separators = TRUE),
+                         style = function(value) {
+          value
+          normalized <- (value - min(rank_data$Total_Deaths)) / 
+            (max(rank_data$Total_Deaths) - min(rank_data$Total_Deaths))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #POSITIVE TEST RATE negative
+    Positive_Test_Rate=dcolDef(name="POSITIVE TEST RATE",
+                              format=colFormat(percent = TRUE,digits = 1),
+                               style = function(value) {
+          value
+          normalized <- (value - min(rank_data$Positive_Test_Rate)) / 
+            (max(rank_data$Positive_Test_Rate) - min(rank_data$Positive_Test_Rate))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #ACCESS TO COVID VACCINES, positive
+    assess_to_vaccines_per_hundred=dcolDef(name="ACCESS TO COVID VACCINES",
+                                          format=colFormat(digits = 0),
+                                           class = "border-left",
+                                           style = function(value) {
+          value
+          normalized <- 1-(value - min(rank_data$assess_to_vaccines_per_hundred)) / 
+            (max(rank_data$assess_to_vaccines_per_hundred) - min(rank_data$assess_to_vaccines_per_hundred))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #DOSES GIVEN PER 100, positive
+    doses_per_hundred=dcolDef(name="DOSES GIVEN PER 100", format=colFormat(digits = 0),
+                               style = function(value) {
+          value
+          normalized <- 1-(value - min(rank_data$doses_per_hundred)) / 
+            (max(rank_data$doses_per_hundred) - min(rank_data$doses_per_hundred))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #LOCKDOWN SEVERITY, negative
+    lockdown_severity=dcolDef(name="LOCKDOWN SEVERITY",
+                             format=colFormat(digits =0),
+                              class = "border-left",
+                              style = function(value) {
+          value
+          normalized <- (value - min(rank_data$lockdown_severity)) / 
+            (max(rank_data$lockdown_severity) - min(rank_data$lockdown_severity))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #COMMUNITY MOBILITY, positive
+    Mobility=dcolDef(name="COMMUNITY MOBILITY",format=colFormat(digits = 0,suffix = "%"),
+                      style = function(value) {
+          value
+          normalized <- (value - min(rank_data$Mobility)) / 
+            (max(rank_data$Mobility) - min(rank_data$Mobility))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+    #2021 GDP GROWTH FORECAST, positive 
+  Gross_State_Product=dcolDef(name="2021 GDP GROWTH FORECAST",format=colFormat(currency = "USD"),
+                               style = function(value) {
+          value
+          normalized <- 1-(value - min(rank_data$Gross_State_Product)) / 
+            (max(rank_data$Gross_State_Product) - min(rank_data$Gross_State_Product))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+  #HEALTHCARE RANK, negative
+  Rank_health=dcolDef(name="HEALTHCARE RANK",
+                       style = function(value) {
+          value
+          normalized <- (value - min(rank_data$Rank_health)) / 
+            (max(rank_data$Rank_health) - min(rank_data$Rank_health))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+  #HUMAN DEVELOPMENT INDEX:positive
+    HDI=dcolDef(name="HUMAN DEVELOPMENT INDEX",
+                 style = function(value) {
+          value
+          normalized <- 1-(value - min(rank_data$HDI)) / 
+            (max(rank_data$HDI) - min(rank_data$HDI))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+  #respiratory mortality rate: negative
+  respiratory_mortality_rate=dcolDef(
+    name="respiratory mortality rate",format=colFormat(percent =TRUE,digits=0),
+     style = function(value) {
+          value
+          normalized <- (value - min(rank_data$respiratory_mortality_rate)) / 
+            (max(rank_data$respiratory_mortality_rate) - min(rank_data$respiratory_mortality_rate))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+  #respiratory infections rate: negative
+respiratory_infections_rate=dcolDef(name="respiratory infections rate",
+                                                     format=colFormat(percent=TRUE,digits = 0),
+                                     style = function(value) {
+          value
+          normalized <- (value - min(rank_data$respiratory_infections_rate)) / 
+                  (max(rank_data$respiratory_infections_rate) -min(rank_data$respiratory_infections_rate))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+#OBESITY PREVALENCE, negative
+  obesity_prevalence=dcolDef(name="OBESITY PREVALENCE",
+                            format=colFormat(percent=TRUE),
+                             style = function(value) {
+          value
+          normalized <- (value - min(rank_data$obesity_prevalence)) / 
+            (max(rank_data$obesity_prevalence) - min(rank_data$obesity_prevalence))
+          color <- good_color(normalized)
+          list(background = color)
+        }),
+#HOSPITAL BEDS,psotive
+  HospitalBeds=dcolDef(name="HOSPITAL BEDS",
+                      format=colFormat(digits=3),
+                       style = function(value) {
+          value
+          normalized <-1- (value - min(rank_data$HospitalBeds)) / 
+            (max(rank_data$HospitalBeds) - min(rank_data$HospitalBeds))
+          color <- good_color(normalized)
+          list(background = color)
+        }
+                             )
+
+  ))
+
+```
+>>>>>>> Stashed changes
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+<<<<<<< Updated upstream
+=======
+```{r}
+
+```
+
+>>>>>>> Stashed changes
