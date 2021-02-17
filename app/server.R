@@ -101,7 +101,7 @@ output$case_overtime <- renderPlotly({
     return(case_fig)
         })
 #----------------------------------------
-#tab panel 2 - Case/Death Map
+#tab panel 2 - Ranking Map
 ouput$map<-renderLeaflet({
     leaflet(data=mapStates) %>%
     setView(-96, 37.8, 4) %>%

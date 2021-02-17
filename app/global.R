@@ -436,9 +436,11 @@ if (!require("reactable")) {
 # }
 ################# Draw Map function Ends #################
 # Reference of Group 5, Fall 2020
-###########Map part: Weiwei Song##################
-setwd("../data/cleaned_model_data")
-map_data<-read.csv("final_model_table.csv",stringsAsFactors = FALSE)
+
+
+###########Rank Map part: Weiwei Song##################
+
+map_data<-read.csv("./output/final_model_table.csv",stringsAsFactors = FALSE)
 map_data<-map_data%>%
   mutate(score=Score*100,Score=1-Score)
 mapStates=map("state",fill=TRUE,plot=FALSE)  
@@ -452,6 +454,7 @@ labels <- sprintf(
 
 
 #######ends: Reference;https://rstudio.github.io/leaflet/choropleths.html##########
+
 ####### clean table data,model building (Weiwei Song and Yutong Yang)######
 setwd("../data/raw_model_data")
 Dec_data<-read_csv("12-31-2020.csv")%>%
@@ -672,7 +675,7 @@ Severity<-severity%>%
             Restrictions_on_internal_movement=`C7_Restrictions on internal movement`,
             International_travel_controls=`C8_International travel controls`)%>%
   drop_na()
-
+####end of the data cleaning code 
 binning<- function(x) {10^(ceiling(log10(x)))}
 
 #use save.image() at any time to save all environment data into an .RData file
