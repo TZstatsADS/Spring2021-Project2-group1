@@ -51,7 +51,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                    theme = shinytheme("yeti"),
                    #--------------------------
                    #tab panel 1 - Basic Case/Death Graph
-                   tabPanel("Basic Case/Death Graph",icon = icon("home"),
+                   tabPanel("Basic Case/Death Graph",icon = icon("chart-line"),
                             fluidPage(
                               fluidRow(
                                 column(12,
@@ -106,24 +106,72 @@ shinyUI(navbarPage(title = 'COVID-19',
                                                     timeFormat = "%Y-%m-%d",
                                                      animate = TRUE, step = 5),
                                           style = "opacity: 0.80"))),
+                   #Tab panel 3 - Ranking Table
+                   tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
+                            ############## YOUR CODE STARTS HERE #############
+                            
+                            
+                            dashboardPage(
+                              dashboardHeader(disable = TRUE),
+                              dashboardSidebar(
+                                sidebarMenu(
+                                  menuItem("Ranking", tabName = "ranking", icon = icon("dashboard")),
+                                  menuItem("Covid Status", icon = icon("clinic-medical"), tabName = "status"),
+                                  menuItem("Vulnerability", icon = icon("allergies"), tabName = "vulnerability"),
+                                  menuItem("Life Quality", icon = icon("briefcase-medical"), tabName = "quality")
+                                )
+                              ),
+                              
+                              dashboardBody(
+                                tabItems(
+                                  tabItem(tabName = "ranking",
+                                          fluidPage(
+                                            titlePanel("Resilience Ranking of the States"),
+                                            reactableOutput("table"),
+                                            tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                            tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
+                                          )
+                                  ),
+                                  
+                                  #####table of covid status here#####
+                                  tabItem(tabName = "status",
+                                          fluidPage(
+                                            titlePanel("Covid Status Across States"),
+                                            reactableOutput("table1"),
+                                            tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                            tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
+                                          )
+                                  ),
+                                  
+                                  #####table of vulnerability here#####
+                                  tabItem(tabName = "vulnerability",
+                                          fluidPage(
+                                            titlePanel("Medical Vulnerability by State"),
+                                            reactableOutput("table2"),
+                                            tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                            tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
+                                          )
+                                  ),
+                                  
+                                  #####table of life quality here#####
+                                  tabItem(tabName = "quality",
+                                          fluidPage(
+                                            titlePanel("Quality of Life by State"),
+                                            reactableOutput("table3"), 
+                                            tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                            tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
+                                          )
+                                  )
+                                  
+                                )
+                              )
+                            )
+                            
+                            
+                            ##########  ### YOUR CODE ENDS HERE ##############
+                   ),
 
-
-                   # ----------------------------------
-                   #tab panel 3 - Source
-                   tabPanel("Data Source",icon = icon("cloud-download"),
-                            HTML(
-                              "<h2> Data Source : </h2>
-                              <h4> <p><li><a href='https://github.com/TZstatsADS/Spring2021-Project2-group1'>Our Github Website</a></li></h4>
-                              <h4> <p><li><a href='https://coronavirus.jhu.edu/map.html'>Coronavirus COVID-19 Global Cases map Johns Hopkins University</a></li></h4>
-                              <h4><li>COVID-19 Cases : <a href='https://github.com/CSSEGISandData/COVID-19' target='_blank'>Github Johns Hopkins University</a></li></h4>
-                              <h4><li>State-Wise GDP : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=532&Statistic=1&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
-                              <h4><li>State-Wise Personal Income : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=56&Statistic=10&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
-                              <h4><li>Vaccination : <a href='https://www.beckershospitalreview.com/public-health/states-ranked-by-percentage-of-covid-19-vaccines-administered.html' target='_blank'>Beckershospitalreview</a></li></h4>
-                              <h4><li>Variants : <a href='https://www.cdc.gov/coronavirus/2019-ncov/transmission/variant-cases.html' target='_blank'>CDC.gov</a></li></h4>
-                              <h4><li>Data Using in Our Model: <a href='https://github.com/TZstatsADS/Spring2021-Project2-group1/tree/master/data/cleaned_model_data' target='_blank'>Github Project Data Folder</a></li></h4>
-                              <h4><li>Spatial Polygons : <a href='https://www.naturalearthdata.com/downloads/' target='_blank'> Natural Earth</a></li></h4>
-                              <h4><li>Our Methodology : <a href='https://docs.google.com/document/d/1VLP7hmsPS2AeVN4g0i98FTbXuvfSXi9kY5bHQ-PdZj4/edit?usp=sharing' target='_blank'> Google Doc</a></li></h4>"
-                            )),
+                  
                    #Tab panel 4 - Methodology
                    
                    tabPanel("Methodology", icon = icon ("camera-retro"),
@@ -261,73 +309,25 @@ shinyUI(navbarPage(title = 'COVID-19',
 <p><a href="https://ceefluz.shinyapps.io/radar/?_ga=2.75165649.232392962.1613305764-1893296810.1610943411"><span style="font-weight: 400;">https://ceefluz.shinyapps.io/radar/?_ga=2.75165649.232392962.1613305764-1893296810.1610943411</span></a></p>
 <p><a href="https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html"><span style="font-weight: 400;">https://shiny.rstudio.com/gallery/hospital-data-antimicrobial.html</span></a></p>'
                             )),
-                   #Tab panel 5 - Ranking Table
-                   tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
-                   ############## YOUR CODE STARTS HERE #############
-                   
-                   
-                   dashboardPage(
-                     dashboardHeader(disable = TRUE),
-                     dashboardSidebar(
-                       sidebarMenu(
-                         menuItem("Ranking", tabName = "ranking", icon = icon("dashboard")),
-                         menuItem("Covid Status", icon = icon("clinic-medical"), tabName = "status"),
-                         menuItem("Vulnerability", icon = icon("allergies"), tabName = "vulnerability"),
-                         menuItem("Life Quality", icon = icon("briefcase-medical"), tabName = "quality")
-                       )
-                     ),
-                     
-                     dashboardBody(
-                       tabItems(
-                         tabItem(tabName = "ranking",
-                                 fluidPage(
-                                   titlePanel("Resilience Ranking of the States"),
-                                   reactableOutput("table"),
-                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
-                                 )
-                         ),
-                         
-                         #####table of covid status here#####
-                         tabItem(tabName = "status",
-                                 fluidPage(
-                                   titlePanel("Covid Status Across States"),
-                                   reactableOutput("table1"),
-                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
-                                 )
-                         ),
-                         
-                         #####table of vulnerability here#####
-                         tabItem(tabName = "vulnerability",
-                                 fluidPage(
-                                   titlePanel("Medical Vulnerability by State"),
-                                   reactableOutput("table2"),
-                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
-                                 )
-                         ),
-                         
-                         #####table of life quality here#####
-                         tabItem(tabName = "quality",
-                                 fluidPage(
-                                   titlePanel("Quality of Life by State"),
-                                   reactableOutput("table3"), 
-                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
-                                 )
-                         )
-                         
-                       )
-                     )
-                   )
-                   
-                   
-                   ##########  ### YOUR CODE ENDS HERE ##############
-                   ),
+                   # ----------------------------------
+                   #tab panel 5 - Source
+                   tabPanel("Data Source",icon = icon("cloud-download"),
+                            HTML(
+                              "<h2> Data Source : </h2>
+                              <h4> <p><li><a href='https://github.com/TZstatsADS/Spring2021-Project2-group1'>Our Github Website</a></li></h4>
+                              <h4> <p><li><a href='https://coronavirus.jhu.edu/map.html'>Coronavirus COVID-19 Global Cases map Johns Hopkins University</a></li></h4>
+                              <h4><li>COVID-19 Cases : <a href='https://github.com/CSSEGISandData/COVID-19' target='_blank'>Github Johns Hopkins University</a></li></h4>
+                              <h4><li>State-Wise GDP : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=532&Statistic=1&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
+                              <h4><li>State-Wise Personal Income : <a href='https://apps.bea.gov/itable/drilldown.cfm?reqid=70&stepnum=40&Major_Area=3&State=00000&Area=XX&TableId=56&Statistic=10&Year=-1&YearBegin=-1&Year_End=-1&Unit_Of_Measure=Levels&Rank=0&Drill=1' target='_blank'>BEA.gov</a></li></h4>
+                              <h4><li>Vaccination : <a href='https://www.beckershospitalreview.com/public-health/states-ranked-by-percentage-of-covid-19-vaccines-administered.html' target='_blank'>Beckershospitalreview</a></li></h4>
+                              <h4><li>Variants : <a href='https://www.cdc.gov/coronavirus/2019-ncov/transmission/variant-cases.html' target='_blank'>CDC.gov</a></li></h4>
+                              <h4><li>Data Using in Our Model: <a href='https://github.com/TZstatsADS/Spring2021-Project2-group1/tree/master/data/cleaned_model_data' target='_blank'>Github Project Data Folder</a></li></h4>
+                              <h4><li>Spatial Polygons : <a href='https://www.naturalearthdata.com/downloads/' target='_blank'> Natural Earth</a></li></h4>
+                              <h4><li>Our Methodology : <a href='https://docs.google.com/document/d/1VLP7hmsPS2AeVN4g0i98FTbXuvfSXi9kY5bHQ-PdZj4/edit?usp=sharing' target='_blank'> Google Doc</a></li></h4>"
+                            )),
                     
                    #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)
-                   tabPanel("Interactive Trend Plots",icon = icon("bacterium"),  #Need a "," here
+                   tabPanel("Interactive Trend Plots",icon = icon("balance-scale-left"),  #Need a "," here
                             ############## YOUR CODE STARTS HERE ##############
                           dashboardPage(
                             dashboardHeader(disable = TRUE),
@@ -381,14 +381,10 @@ shinyUI(navbarPage(title = 'COVID-19',
 
                    ############## YOUR CODE ENDS HERE ################
           ),
-          # # Tab Panel 7 - Model Map
-          # tabPanel("Model Map", icon= icon("aws")),
-          ############## YOUR CODE STARTS HERE ##############
-          
-          
+
           
           ############## YOUR CODE ENDS HERE ################
-          # Tab Panel 8 - About Us
+          # Tab Panel 7 - About Us
           tabPanel("About Us",icon = icon("address-book"),
                    HTML(
                      ################### Your HTML Code Starts Here ##################
