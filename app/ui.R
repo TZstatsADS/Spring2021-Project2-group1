@@ -375,14 +375,14 @@ shinyUI(navbarPage(title = 'COVID-19',
           # Tab Panel 8 - About Us
           tabPanel("About Us",icon = icon("address-book"),
                    HTML(
-                     ################### Your HTML Starts Here ##################
+                     ################### Your HTML Code Starts Here ##################
                      # Notice the single quote mark: '  //  Put everything between two single-quote marks
                      '
                     
                      
                      
                      '
-                     ################### Your HTML Ends Here ##################
+                     ################### Your HTML Code Ends Here ##################
                    ))
                           
 ))
