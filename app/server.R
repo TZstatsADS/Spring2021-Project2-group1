@@ -121,7 +121,7 @@ pal <- reactive(colorNumeric(c("#FFFFFFFF" ,rev(inferno(256))), domain = c(0,log
 output$map <- renderLeaflet({
     map <-  leaflet(states) %>%
         addProviderTiles("Stadia.Outdoors", options = providerTileOptions(noWrap = TRUE)) %>%
-        setView(0, 30, zoom = 3) })
+        setView(-100, 30, 3.8) })
 
 observe({
     if(!is.null(input$date_map)){
