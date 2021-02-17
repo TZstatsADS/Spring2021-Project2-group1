@@ -330,7 +330,7 @@ output$table <- renderReactable({
                                         }),
                   #2021 GDP GROWTH FORECAST, positive 
                   Gross_State_Product=human_column(name="2021 GSP GROWTH FORECAST",
-                                                   format=colFormat(currency = "USD"),
+                                                   format=colFormat(digits = 2),
                                                    class = "gsp-cell",
                                                    style = function(value) {
                                                        value
@@ -501,7 +501,7 @@ output$table2 <- renderReactable({
                                            # preserve white space to prevent it from being collapsed by default
                                            style = list(fontFamily = "monospace", whiteSpace = "pre")),
                   respiratory_mortality_rate=colDef(
-                      name="respiratory mortality rate",format=colFormat(percent =TRUE,digits=0),
+                      name="RESPIRATORY MORTALITY RATE",format=colFormat(percent =TRUE,digits=0),
                       cell = function(value) {
                           value <- paste0(format(value * 100, nsmall = 1), "%")
                           value <- format(value, width = 5, justify = "right")
@@ -512,7 +512,7 @@ output$table2 <- renderReactable({
                       # Use the operating system's default monospace font, and
                       # preserve white space to prevent it from being collapsed by default
                       style = list(fontFamily = "monospace", whiteSpace = "pre")),
-                  respiratory_infections_rate=colDef(name="respiratory infections rate",
+                  respiratory_infections_rate=colDef(name="RESPIRATORY INFECTIOUS RATE",
                                                      format=colFormat(percent=TRUE,digits = 0),
                                                      cell = function(value) {
                                                          value <- paste0(format(value * 100, nsmall = 1), "%")
@@ -587,7 +587,7 @@ output$table3 <- renderReactable({
                                      # preserve white space to prevent it from being collapsed by default
                                      style = list(fontFamily = "monospace", whiteSpace = "pre")
                   ),
-                  Gross_State_Product=colDef(name="2021 GDP GROWTH FORECAST",
+                  Gross_State_Product=colDef(name="2021 GSP GROWTH FORECAST",
                                              cell = function(value) {
                                                  width <- paste0(value * 100 / max(data3$Gross_State_Product), "%")
                                                  value <- format(value, big.mark = ",")
