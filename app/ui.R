@@ -263,14 +263,98 @@ shinyUI(navbarPage(title = 'COVID-19',
                    #Tab panel 5 - Ranking Table
                    tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
                    ############## YOUR CODE STARTS HERE ##############
-                   fluidPage(
-                     titlePanel("reactable example"),
-                     reactableOutput("table"),
-                     tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                     tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                   # fluidPage(
+                   #   titlePanel("reactable example"),
+                   #   reactableOutput("table"),
+                   #   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                   #   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                   # ),
+                   
+                   
+                   # sidebar <- dashboardSidebar(
+                   #   sidebarMenu(
+                   #     menuItem("Ranking", tabName = "ranking", icon = icon("dashboard")),
+                   #     menuItem("Covid Status", icon = icon("clinic-medical"), tabName = "status"),
+                   #     menuItem("Vulnerability", icon = icon("allergies"), tabName = "vulnerability"),
+                   #     menuItem("Life Quality", icon = icon("briefcase-medical"), tabName = "quality")
+                   #   )
+                   # ),
+                   # 
+                   # body <- dashboardBody(
+                   #   tabItems(
+                   #     tabItem(tabName = "ranking",
+                   #             fluidPage(
+                   #               titlePanel("reactable example"),
+                   #               reactableOutput("table"),
+                   #               tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                   #               tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                   #             )
+                   #     ),
+                   #     
+                   #     tabItem(tabName = "status",
+                   #             # h2("Widgets tab content")
+                   #     )
+                   #   )
+                   # ),
+                   
+                   
+                   dashboardPage(
+                     dashboardHeader(disable = TRUE),
+                     dashboardSidebar(
+                       sidebarMenu(
+                         menuItem("Ranking", tabName = "ranking", icon = icon("dashboard")),
+                         menuItem("Covid Status", icon = icon("clinic-medical"), tabName = "status"),
+                         menuItem("Vulnerability", icon = icon("allergies"), tabName = "vulnerability"),
+                         menuItem("Life Quality", icon = icon("briefcase-medical"), tabName = "quality")
+                       )
+                     ),
+                     
+                     dashboardBody(
+                       tabItems(
+                         tabItem(tabName = "ranking",
+                                 fluidPage(
+                                   titlePanel("Resilience Ranking of the States"),
+                                   reactableOutput("table"),
+                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                 )
+                         ),
+                         
+                         #####table of covid status here#####
+                         tabItem(tabName = "status",
+                                 fluidPage(
+                                   titlePanel("Covid Status Across States"),
+                                   reactableOutput("table1"),
+                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                 )
+                         ),
+                         
+                         #####table of vulnerability here#####
+                         tabItem(tabName = "vulnerability",
+                                 fluidPage(
+                                   titlePanel("Medical Vulnerability by State"),
+                                   reactableOutput("table2"),
+                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                 )
+                         ),
+                         
+                         #####table of life quality here#####
+                         tabItem(tabName = "quality",
+                                 fluidPage(
+                                   titlePanel("Quality of Life by State"),
+                                   reactableOutput("table3"), 
+                                   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                 )
+                         )
+                         
+                       )
+                     )
                    )
-          
-          
+                   
+                   
                    ##########  ### YOUR CODE ENDS HERE ##############
                    ),
                     #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)

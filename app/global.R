@@ -513,8 +513,19 @@ good_color <- make_color_pal(colorschemes$BluetoOrange.12, bias = 2)
 
 sticky_style <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
                      borderRight = "1px solid #eee")
+bar_chart <- function(label, width = "100%", height = "14px", fill = "#00bfc4", background = NULL) {
+  bar <- div(style = list(background = fill, width = width, height = height))
+  chart <- div(style = list(flexGrow = 1, marginLeft = "6px", background = background), bar)
+  div(style = list(display = "flex", alignItems = "center"), label, chart)
+}
 
-### Table Function Ends
+
+data<-model_data
+data1<- data[,c("State",covid_cols)]
+data2<-data[,c("State",vul_cols)]
+data3<-data[,c("State",human_cols)]
+
+### Table Function Ends #########
 
 
 
