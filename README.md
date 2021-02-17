@@ -30,7 +30,7 @@ Term: Spring 2021
 + **Shiny App link**
 	+ [website]() 
 
-![screenshot](doc/figs/Resilience Ranking.png)
+![screenshot](doc/figs/ResilienceRanking.png)
  
 + **Project summary**: 
 	+ In this project, we developed a website with the Shiny app to help users to have a general idea of the pandemic and to understand how each state in the US is performing during the pandemic. Utilizing data about COVID-19 in the US, we created a ranking table and related data analysis to demonstrate the best and worst places to be in during the crisis. Users can use the information provided to gauge and compare the resilience of different states. Also, we have an interactive map that displays COVID-19 cases and deaths which changes over time.
