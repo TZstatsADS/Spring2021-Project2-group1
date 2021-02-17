@@ -523,11 +523,47 @@ bar_chart <- function(label, width = "100%", height = "14px", fill = "#00bfc4", 
 data<-model_data
 data1<- data[,c("State",covid_cols)]
 data2<-data[,c("State",vul_cols)]
-data3<-data[,c("State",human_cols)]
+data3<-data[,c("State",human_cols)]%>%
+  mutate(Mobility=-Mobility)
 
 ### Table Function Ends #########
 
+### data clean for analysis#######
+Mobility1<-read_csv("2020_US_Region_Mobility_Report.csv")
+Mobility2<-read_csv("applemobilitytrends-2021-02-15.csv")
+severity<-read_csv("OxCGRT_US_subnational_05Aug2020.csv")
+covid_confirmed<-read_csv("time_series_covid19_confirmed_US.csv")%>%
+  rename(State=Province_State)
+covid_death<-read_csv("time_series_covid19_deaths_US.csv")%>%
+  rename(State=Province_State)
+Mobility_place<-Mobility1%>%
+  transmute(State=sub_region_1,Date=date,
+            retail_and_recreation_percent_change_from_baseline,
+            grocery_and_pharmacy_percent_change_from_baseline,
+            parks_percent_change_from_baseline,
+            transit_stations_percent_change_from_baseline,
+            workplaces_percent_change_from_baseline,
+            residential_percent_change_from_baseline)%>%
+  drop_na()%>%
+  group_by(State,Date)%>%
+  summarise_all(mean)
 
+Mobility_tans_type<-Mobility2%>%
+  filter(country=="United States")%>%
+  select(-geo_type,-region,-country,-alternative_name)%>%
+  rename(State=`sub-region`)%>%
+  drop_na()
+Severity<-severity%>%
+  transmute(State=RegionName,Date,
+            School_closing= `C1_School closing`,
+            Workplace_closing=`C2_Workplace closing`,
+            Cancel_public_events=`C3_Cancel public events`,
+            Restrictions_on_gatherings=`C4_Restrictions on gatherings`,
+            Close_public_transport= `C5_Close public transport`,
+            Stay_at_home_requirements=`C6_Stay at home requirements`,
+            Restrictions_on_internal_movement=`C7_Restrictions on internal movement`,
+            International_travel_controls=`C8_International travel controls`)%>%
+  drop_na()
 
 binning<- function(x) {10^(ceiling(log10(x)))}
 
