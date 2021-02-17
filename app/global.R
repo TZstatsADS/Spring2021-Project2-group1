@@ -160,10 +160,10 @@ if (!require("reactable")) {
 
 #--------------------------------------------------------------------
 ###############################Define Functions#######################
-# data_cooker_variants <- function(df){
-#   #input dataframe and change the Country/Region column into standard format
+ #data_cooker_variants <- function(df){
+   #input dataframe and change the Country/Region column into standard format
 #   df$State[df$State == "AL"] <- "Alabama"
-#   df$State[df$State == "AK"] <- "Alaska"
+#  df$State[df$State == "AK"] <- "Alaska"
 #   df$State[df$State == "AS"] <- "American Samoa"
 #   df$State[df$State == "AZ"] <- "Arizona"
 #   df$State[df$State == "AR"] <- "Arkansas"
@@ -456,8 +456,7 @@ labels <- sprintf(
 #######ends: Reference;https://rstudio.github.io/leaflet/choropleths.html##########
 
 ####### clean table data,model building (Weiwei Song and Yutong Yang)######
-setwd("../data/raw_model_data")
-Dec_data<-read_csv("12-31-2020.csv")%>%
+Dec_data<-read_csv("./data/raw_model_data/12-31-2020.csv")%>%
   transmute(State=Province_State,Confirmed_Dec=Confirmed,Deaths_Dec=Deaths)%>%
   group_by(State)%>%
   summarise_all(sum)
@@ -467,13 +466,13 @@ HDI<-read_csv("HDI_USA_2018.csv")%>%
   select(State:Educational_index)
 
 
-healthcare<-read_csv("healthcare_coverage_rank_2018.csv")%>%
+healthcare<-read_csv("./data/raw_model_data/healthcare_coverage_rank_2018.csv")%>%
   drop_na()%>%
   rename(State=STATE,Rank_health=RANK)
-GDP_prediction<-read_csv("US_GDP_prediction.csv")
+GDP_prediction<-read_csv("./data/raw_model_data/US_GDP_prediction.csv")
 
 
-indicators<-read_csv("01-31-2021.csv")%>%
+indicators<-read_csv("./data/raw_model_data/01-31-2021.csv")%>%
   transmute(State=Province_State,Confirmed_Jan=Confirmed,Total_Deaths=Deaths,
             Positive_Test_Rate=Confirmed_Jan/Total_Test_Results)%>%
   group_by(State)%>%
@@ -486,9 +485,8 @@ indicators<-read_csv("01-31-2021.csv")%>%
   drop_na()
 #write_csv(indicators,"../indictors_of_model.csv")
 
-setwd("../data/cleaned_model_data")
 
-model_data<-read_csv("modeldata.csv")[,-1]
+model_data<-read_csv("./data/cleaned_model_data/modeldata.csv")[,-1]
 I<- function(A){
   min_value<-min(A)
   max_value<-max(A)
@@ -615,23 +613,22 @@ data3<-data[,c("State",human_cols)]%>%
 ### Table Function Ends #########
 
 ### data clean for analysis#######
-setwd("../data/graphical_data")
-Mobility1<-read_csv("2020_US_Region_Mobility_Report.csv")
-Mobility2<-read_csv("applemobilitytrends-2021-02-15.csv")
-severity<-read_csv("OxCGRT_US_subnational_05Aug2020.csv")
-covid_confirmed<-read_csv("time_series_covid19_confirmed_US.csv")%>%
+Mobility1<-read_csv("./data/graphical_data/2020_US_Region_Mobility_Report.csv")
+Mobility2<-read_csv("./data/graphical_data/applemobilitytrends-2021-02-15.csv")
+severity<-read_csv("./data/graphical_data/OxCGRT_US_subnational_05Aug2020.csv")
+covid_confirmed<-read_csv("./data/graphical_data/time_series_covid19_confirmed_US.csv")%>%
   rename(State=Province_State)%>%
   select(State,`1/22/20`:`2/15/21`)%>%
   gather(key="Date",value="confirmed_number",-State)
 
-covid_death<-read_csv("time_series_covid19_deaths_US.csv")%>%
+covid_death<-read_csv("./data/graphical_data/time_series_covid19_deaths_US.csv")%>%
   rename(State=Province_State)%>%
   select(State,Population,`1/22/20`:`2/15/21`)%>%
   gather(key="Date",value="death",-Population,-State)
 
 covid_all<-covid_death%>%
   left_join(covid_confirmed,by=c("State","Date"))
-vaccine<-read_csv("us_state_vaccinations.csv")%>%
+vaccine<-read_csv("./data/graphical_data/us_state_vaccinations.csv")%>%
   rename(State=location,Date=date)%>%
   drop_na()
 
@@ -676,6 +673,7 @@ Severity<-severity%>%
             International_travel_controls=`C8_International travel controls`)%>%
   drop_na()
 ####end of the data cleaning code 
+
 binning<- function(x) {10^(ceiling(log10(x)))}
 
 #use save.image() at any time to save all environment data into an .RData file
