@@ -1,0 +1,90 @@
+---
+title: "clean graphical data"
+author: "Weiwei Song"
+date: "2/17/2021"
+output: html_document
+---
+
+```{r,read packages}
+###data are in the graphical_data folder under data
+library(tidyverse)
+library(reshape2)
+Mobility1<-read_csv("2020_US_Region_Mobility_Report.csv")
+
+Mobility2<-read_csv("applemobilitytrends-2021-02-15.csv")
+severity<-read_csv("OxCGRT_US_subnational_05Aug2020.csv")
+covid_confirmed<-read_csv("time_series_covid19_confirmed_US.csv")%>%
+  rename(State=Province_State)%>%
+  select(State,`1/22/20`:`2/15/21`)%>%
+  gather(key="Date",value="confirmed_number",-State)
+
+covid_death<-read_csv("time_series_covid19_deaths_US.csv")%>%
+  rename(State=Province_State)%>%
+  select(State,Population,`1/22/20`:`2/15/21`)%>%
+  gather(key="Date",value="death",-Population,-State)
+  
+covid_all<-covid_death%>%
+  left_join(covid_confirmed,by=c("State","Date"))
+
+vaccine<-read_csv("us_state_vaccinations.csv")%>%
+  rename(State=location,Date=date)%>%
+  drop_na()
+  
+```
+
+
+```{r }
+Mobility_place<-Mobility1%>%
+  transmute(State=sub_region_1,Date=date,
+            retail_and_recreation_percent_change_from_baseline,
+            grocery_and_pharmacy_percent_change_from_baseline,
+            parks_percent_change_from_baseline,
+            transit_stations_percent_change_from_baseline,
+            workplaces_percent_change_from_baseline,
+            residential_percent_change_from_baseline)%>%
+  drop_na()%>%
+  group_by(State,Date)%>%
+  summarise_all(mean)
+```
+
+
+```{r}
+Mobility_tans_type<-Mobility2%>%
+  filter(country=="United States")%>%
+  select(-geo_type,-region,-country,-alternative_name)%>%
+  rename(State=`sub-region`)%>%
+  drop_na()
+
+mobdata<-melt(Mobility_tans_type,id.vars=c("State","transportation_type"),
+             variable.name="Date",value.name="change")
+New_Mobility_trans_type<-dcast(mobdata, State+Date ~ transportation_type, mean)%>%
+  mutate(transit_change_from_baseline = (transit-100),
+         walking_change_from_baseline = (walking-100))%>%
+  select(-transit,-walking)
+New_Mobility_trans_type$Date<-as.Date(New_Mobility_trans_type$Date)
+
+##### merging mobility
+Mobility_all<-Mobility_place%>% 
+  left_join(New_Mobility_trans_type, by=c("State","Date"))%>%
+  drop_na()
+
+```
+
+```{r}
+
+Severity<-severity%>%
+  transmute(State=RegionName,Date,
+           School_closing= `C1_School closing`,
+          Workplace_closing=`C2_Workplace closing`,
+         Cancel_public_events=`C3_Cancel public events`,
+         Restrictions_on_gatherings=`C4_Restrictions on gatherings`,
+        Close_public_transport= `C5_Close public transport`,
+       Stay_at_home_requirements=`C6_Stay at home requirements`,
+            Restrictions_on_internal_movement=`C7_Restrictions on internal movement`,
+            International_travel_controls=`C8_International travel controls`)%>%
+  drop_na()
+```
+
+
+
+

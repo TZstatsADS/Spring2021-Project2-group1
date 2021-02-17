@@ -1,0 +1,67 @@
+---
+title: "map"
+author: "Weiwei Song"
+date: "2/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+
+```{r}
+
+library(shiny)
+library(leaflet)
+library(tidyverse)
+library(htmltools)
+library(maps)
+map_data<-read.csv("final_model_table.csv",stringsAsFactors = FALSE)
+map_data<-map_data%>%
+  mutate(score=Score*100,Score=1-Score)
+mapStates=map("state",fill=TRUE,plot=FALSE)  
+
+pal <- colorBin("YlOrRd", domain = map_data$Score)
+
+labels <- sprintf(
+"<strong>%s</strong><br/> <strong>Rank: %s</strong><br/> ———— <br/> Score: %s ",
+map_data$State, map_data$Rank,map_data$score) %>% 
+  lapply(htmltools::HTML)
+
+map<-leaflet(data=mapStates) %>%
+  setView(-96, 37.8, 4) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = pal(map_data$Score),
+    weight = 2,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")) 
+
+```
+
