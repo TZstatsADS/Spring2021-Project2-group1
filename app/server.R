@@ -63,18 +63,18 @@ output$case_overtime <- renderPlotly({
         #render plotly figure
         case_fig <- plot_ly()
         #add comfirmed case lines
-        case_fig <- case_fig %>% add_lines(x = ~date_choices[1:end_date_index], 
+        case_fig <- case_fig %>% add_lines(x = ~date_choices[1:end_date_index],
                              y = ~as.numeric(aggre_cases[input$country,])[1:end_date_index],
                              line = list(color = 'rgba(67,67,67,1)', width = 2),
                              name = 'Confirmed Cases')
-        #add death line 
+        #add death line
         case_fig <- case_fig %>% add_lines(x = ~date_choices[1:end_date_index],
                                y = ~as.numeric(aggre_death[input$country,])[1:end_date_index],
                                name = 'Death Toll')
         #set the axis for the plot
-        case_fig <- case_fig %>% 
+        case_fig <- case_fig %>%
             layout(title = paste0(input$country,'\t','Trend'),
-                   xaxis = list(title = 'Date',showgrid = FALSE), 
+                   xaxis = list(title = 'Date',showgrid = FALSE),
                    yaxis = list(title = 'Comfirmed Cases/Deaths',showgrid=FALSE)
                    )
         }
@@ -83,18 +83,18 @@ output$case_overtime <- renderPlotly({
         #render plotly figure
         case_fig <- plot_ly()
         #add comfirmed case lines
-        case_fig <- case_fig %>% add_lines(x = ~date_choices[1:end_date_index], 
+        case_fig <- case_fig %>% add_lines(x = ~date_choices[1:end_date_index],
                                            y = ~log(as.numeric(aggre_cases[input$country,])[1:end_date_index]),
                                            line = list(color = 'rgba(67,67,67,1)', width = 2),
                                            name = 'Confirmed Cases')
-        #add death line 
+        #add death line
         case_fig <- case_fig %>% add_lines(x = ~date_choices[1:end_date_index],
                                            y = ~log(as.numeric(aggre_death[input$country,])[1:end_date_index]),
                                            name = 'Death Toll')
         #set the axis for the plot
-        case_fig <- case_fig %>% 
+        case_fig <- case_fig %>%
             layout(title = paste0(input$country,'<br>','\t','Trends'),
-                   xaxis = list(title = 'Date',showgrid = FALSE), 
+                   xaxis = list(title = 'Date',showgrid = FALSE),
                    yaxis = list(title = 'Comfirmed Cases/Deaths(Log Scale)',showgrid=FALSE)
             )
     }
@@ -107,17 +107,17 @@ data_countries <- reactive({
     if(!is.null(input$choices)){
         if(input$choices == "Cases"){
             return(aggre_cases_copy)
-            
+
         }else{
             return(aggre_death_copy)
         }}
 })
 
 #get the largest number of count for better color assignment
-maxTotal<- reactive(max(data_countries()%>%select_if(is.numeric), na.rm = T))    
+maxTotal<- reactive(max(data_countries()%>%select_if(is.numeric), na.rm = T))
 ##color palette
-pal <- reactive(colorNumeric(c("#FFFFFFFF" ,rev(inferno(256))), domain = c(0,log(binning(maxTotal())))))    
-    
+pal <- reactive(colorNumeric(c("#FFFFFFFF" ,rev(inferno(256))), domain = c(0,log(binning(maxTotal())))))
+
 output$map <- renderLeaflet({
     map <-  leaflet(states) %>%
         addProviderTiles("Stadia.Outdoors", options = providerTileOptions(noWrap = TRUE)) %>%
@@ -140,14 +140,14 @@ observe({
                                 "Total Cases: ",
                                 aggre_cases_join[[select_date]],
                                 "<br><strong>")
-        
+
         leafletProxy("map", data = aggre_cases_join)%>%
             addPolygons(fillColor = pal()(log((aggre_cases_join[[select_date]])+1)),
                         layerId = ~name,
                         fillOpacity = 1,
                         color = "#BDBDC3",
                         weight = 1,
-                        popup = country_popup) 
+                        popup = country_popup)
     } else {
        #join the two dfs together
         aggre_death_join<- merge(states,
@@ -162,7 +162,7 @@ observe({
                                 "Total Deaths: ",
                                 aggre_death_join[[select_date]],
                                 "<br><strong>")
-        
+
         leafletProxy("map", data = aggre_death_join)%>%
             addPolygons(fillColor = pal()(log((aggre_death_join[[select_date]])+1)),
                       layerId = ~name,
@@ -170,7 +170,7 @@ observe({
                         color = "#BDBDC3",
                         weight = 1,
                        popup = country_popup)
-        
+
         }
     })
 
@@ -220,7 +220,7 @@ output$table <- renderReactable({
                   #STATE need to insert pictures 
                   State = colDef(name="STATE", defaultSortOrder = "asc",
                                  maxWidth = 110,
-                                 headerStyle = list(fontWeight = 700), 
+                                 headerStyle = list(fontWeight = 700) 
                                  # cell = function(value) {
                                  #     # div(
                                  #     #     class = "state-cell",
@@ -651,11 +651,327 @@ div(class = "standings",
 # Panel 5 ends ##############
 
 
-############# Tab Panel 6 - Statistical Graphs (Finish if having time, not necessary) #########
-table_data <- model_data_copy
-########## YOUR CODE STARTS HERE #############
+############ Tab Panel 6 - Statistical Graphs (Finish if having time, not necessary) #########
+######### YOUR CODE STARTS HERE #############
+states1 <- states_complete%>%
+    filter(State%in%c('Alaska','North Dakota','Connecticut','Minnesota','Montana'))
+
+output$vaccine_ts=renderPlotly({
+    p1<-ggplotly(ggplot(states1,aes(x=Date, y=people_vaccinated, color = State,
+                                    text=paste('Date:',Date,
+                                               '<br>Total Number of Vaccinated People:',format(round(people_vaccinated,0)),'<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Total Number of Vaccinated People") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "Total Number of Vaccinated People Over Time",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p2<-ggplotly(ggplot(states1,aes(x=Date, y=share_doses_used, color = State,
+                                    text=paste('Date:',Date,
+                                               '<br>Share of Dose Used:',format(round(share_doses_used,0)),'<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Share of Dose Used") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "Share of Dose Used Over Time",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p3<-ggplotly(ggplot(states1,aes(x=Date, y=total_confirmed.x,color = State,
+                                    text=paste('Date:',Date,
+                                               '<br>Total Confirmed:',format(round(total_confirmed.x,0)),
+                                               '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Total Confirmed Cases") +
+                     scale_fill_brewer(palette = 'Set2')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "Total Confirmed Cases Over Time",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p4<-ggplotly(ggplot(states1,aes(x=Date, y=total_confirmed.y, color = State,
+                                    text=paste('Date:',Date,
+                                               '<br>Total Deaths:',format(round(total_confirmed.y,0)),
+                                               '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Total Deaths") +
+                     scale_fill_brewer(palette = 'Set2')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "Total Deaths Over Time",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
 
 
+    subplot(style(p1,showlegend=F),style(p2,showlegend=T),
+            style(p3,showlegend=F),style(p4,showlegend=F),
+            nrows=2,shareX=F,shareY=F,titleX=T,titleY=T,margin=0.065)%>%
+        layout(paper_bgcolor='transparent')
+})
+
+##Mobility_all_func starts ##
+###### Time series plot for mobility ######
+
+Mobility_all_func <- Mobility_all %>% 
+    filter(State%in%c('Alaska','North Dakota','Connecticut','Minnesota','Montana'))
+
+output$mobi_ts=renderPlotly({
+    p1<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=retail_and_recreation_percent_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Retail and Recreation Mobility:',
+                                                    format(round(retail_and_recreation_percent_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Retail And Recreation Mobility") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "Retail And Recreation Mobility Over Time",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p2<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=grocery_and_pharmacy_percent_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Grocery And Pharmacy Mobility:',
+                                                    format(round(grocery_and_pharmacy_percent_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Grocery And Pharmacy Mobility Over Time") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "Grocery And Pharmacy Mobility",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p3<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=parks_percent_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Parks Mobility:',
+                                                    format(round(parks_percent_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Parks Mobility Over Time") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "parks",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p4<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=transit_stations_percent_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Transit Station Mobility:',
+                                                    format(round(transit_stations_percent_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Transit Station Mobility") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "parks",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p5<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=workplaces_percent_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Workplaces Mobility:',
+                                                    format(round(workplaces_percent_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Workplaces Mobility Over Time") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "workplaces",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p6<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=residential_percent_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Residential Mobility:',
+                                                    format(round(residential_percent_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Residential Mobility Over Time") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "residential",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p7<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=transit_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Transit Mobility:',
+                                                    format(round(transit_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Transit Mobility Over Time") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "parks",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+
+    p8<-ggplotly(ggplot(Mobility_all_func,aes(x=Date, y=walking_change_from_baseline, color = State,
+                                         text=paste('Date:',Date,
+                                                    '<br>Walking Mobility:',
+                                                    format(round(walking_change_from_baseline,4)),
+                                                    '<br>State:',State)))+
+                     geom_point(size=1.25)+
+                     theme_bw() +
+                     xlab("Time") +
+                     ylab("Walking Mobility over time") +
+                     scale_fill_brewer(palette = 'Set1')+
+                     theme(legend.title = element_blank()),
+                 tooltip='text')%>%
+        add_annotations(
+            text = "walking",
+            x = 0.30,
+            y = 1,
+            yref = "paper",
+            xref = "paper",
+            xanchor = "left",
+            yanchor = "top",
+            yshift = 23,
+            showarrow = FALSE,
+            font = list(size = 15)
+        )
+    subplot(style(p1,showlegend=F),style(p2,showlegend=T),
+            style(p3,showlegend=F),style(p4,showlegend=F),
+            style(p5,showlegend=F),style(p6,showlegend=F),
+            style(p7,showlegend=F),style(p8,showlegend=F),
+            nrows=2,shareX=F,shareY=F,titleX=T,titleY=T,margin=0.065)%>%
+        layout(paper_bgcolor='transparent')
+
+})
 
 ########## YOUR CODE ENDS HERE #############
 ############ Panel 6 ends #######################

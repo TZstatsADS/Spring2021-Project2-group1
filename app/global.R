@@ -1,5 +1,14 @@
 #--------------------------------------------------------------------
 ###############################Install Related Packages #######################
+if (!require("data.table")) {
+  install.packages("data.table")
+  library(data.table)
+}
+if (!require("reshape2")) {
+  install.packages("reshape2")
+  library(reshape2)
+}
+
 if (!require("dplyr")) {
   install.packages("dplyr")
   library(dplyr)
@@ -244,7 +253,7 @@ data_transformer_income <- function(df) {
   aggre_df <- df %>% select(-one_of(not_select_cols)) 
   return(aggre_df)
 }
-  
+
 data_transformer_variant <- function(df) {
   df <- data_cooker_variants(df)
   not_select_cols <- c("Range")
@@ -258,9 +267,9 @@ data_transformer_case <- function(df) {
   ##rownames equal to countries name, and colnames equals date
   #################################################################
   #clean the country/regionnames
-#  df <- data_cooker(df)
+  #  df <- data_cooker(df)
   #columns that don't need 
- not_select_cols <- c("UID","iso2","iso3","code3","FIPS","Admin2","Country_Region","Combined_Key","Lat","Long_")
+  not_select_cols <- c("UID","iso2","iso3","code3","FIPS","Admin2","Country_Region","Combined_Key","Lat","Long_")
   #aggregate the province into country level
   aggre_df <- df %>% group_by(Province_State) %>% 
     select(-one_of(not_select_cols)) %>% summarise_all(sum)
@@ -272,8 +281,8 @@ data_transformer_case <- function(df) {
   #change e.g: "x1.22.20" -> "2020-01-22"
   date_choices <- as.Date(date_name,format = 'X%m.%d.%y')
   #assign column nam
- colnames(aggre_df) <- date_choices
- return(aggre_df)
+  colnames(aggre_df) <- date_choices
+  return(aggre_df)
 }
 
 data_transformer_death <- function(df) {
@@ -373,9 +382,9 @@ if(file.exists(output_shapefile_filepath)){
   load(output_shapefile_filepath)
 }else{
   states <- readOGR(dsn ="./data/ne_10m_admin_1_states_provinces",
-                       layer = "ne_10m_admin_1_states_provinces",
-                       encoding = "utf-8",use_iconv = T,
-                       verbose = FALSE)
+                    layer = "ne_10m_admin_1_states_provinces",
+                    encoding = "utf-8",use_iconv = T,
+                    verbose = FALSE)
   save(states, file=output_shapefile_filepath)
 }
 ################################################
@@ -471,7 +480,8 @@ map_data <- merge(map_data, aggre_income_use,by = "State")
 
 
 ####### Table Function ###########
-
+model_data <- read.csv("./output/cleaned_model_data/final_model_table.csv")
+model_data_copy <- as.data.frame(model_data)
 rank_data <- model_data
 covid_cols<-c("One_Month_Cases","One_month_fatality_rate","Total_Deaths","Positive_Test_Rate")
 human_cols<-c("lockdown_severity","Mobility","Gross_State_Product","Rank_health","HDI")
@@ -527,9 +537,87 @@ data3<-data[,c("State",human_cols)]
 
 ### Table Function Ends #########
 
+###### Analysis Data Cleaning Starts #####
 
+### data clean for statistical graphs ####
+Mobility1<-read_csv("./data/graphical_data/2020_US_Region_Mobility_Report.csv")
+Mobility2<-read_csv("./data/graphical_data/applemobilitytrends-2021-02-15.csv")
+covid_confirmed<-read_csv("./data/graphical_data/time_series_covid19_confirmed_US.csv")%>%
+  rename(State=Province_State)%>%
+  select(State,`1/22/20`:`2/15/21`)%>%
+  gather(key="Date",value="confirmed_number",-State)%>%
+  filter(Date>='2021-01-13')%>%
+  group_by(State,Date)%>%
+  summarise(total_confirmed = sum(confirmed_number))
+
+covid_death<-read_csv("./data/graphical_data/time_series_covid19_deaths_US.csv")%>%
+  rename(State=Province_State)%>%
+  select(State,Population,`1/22/20`:`2/15/21`)%>%
+  gather(key="Date",value="death",-Population,-State)%>%
+  filter(Date>='2021-01-13')%>%
+  group_by(State,Date)%>%
+  summarise(total_confirmed = sum(death))
+
+
+
+vaccine<-read_csv("./data/graphical_data/us_state_vaccinations.csv")%>%
+  rename(State=location,Date=date)%>%
+  drop_na()
+
+Mobility_place<-Mobility1%>%
+  transmute(State = sub_region_1,Date=date,
+            retail_and_recreation_percent_change_from_baseline,
+            grocery_and_pharmacy_percent_change_from_baseline,
+            parks_percent_change_from_baseline,
+            transit_stations_percent_change_from_baseline,
+            workplaces_percent_change_from_baseline,
+            residential_percent_change_from_baseline)%>%
+  drop_na()%>%
+  group_by(State,Date)%>%
+  summarise_all(mean)
+
+Mobility_tans_type<-Mobility2%>%
+  filter(country=="United States")%>%
+  select(-geo_type,-region,-country,-alternative_name)%>%
+  rename(State=`sub-region`)%>%
+  drop_na()
+mobdata<-melt(Mobility_tans_type,id.vars=c("State","transportation_type"),
+              variable.name="Date",value.name="change")
+New_Mobility_trans_type<-dcast(mobdata, State+Date ~ transportation_type, mean,
+                               value.var="change", drop=TRUE)%>%
+  mutate(transit_change_from_baseline = (transit-100),
+         walking_change_from_baseline = (walking-100))%>%
+  select(-transit,-walking)%>%
+  drop_na()
+New_Mobility_trans_type$Date<-as.Date(New_Mobility_trans_type$Date)
+
+##### merging mobility
+Mobility_all<-Mobility_place%>%
+  left_join(New_Mobility_trans_type, by=c("State","Date"))%>%
+  drop_na()
+
+
+##### merging all data of states for plotting
+### unifying the date
+vaccine$Date<-as.Date(vaccine$Date)
+covid_confirmed$Date<-strptime(covid_confirmed$Date,'%m/%d/%y')
+covid_death$Date<-strptime(covid_death$Date,'%m/%d/%y')
+covid_confirmed$Date<-as.Date(covid_confirmed$Date)
+covid_death$Date<-as.Date(covid_death$Date)
+Mobility_all$Date<-as.Date(Mobility_all$Date)
+# Severity$Date<-strptime(Severity$Date,'%Y%m%d')
+# Severity$Date<-as.Date(Severity$Date)
+
+### joining all
+states_complete<-covid_confirmed%>%
+  left_join(covid_death, by=c("State","Date"))%>%
+  left_join(vaccine, by=c("State","Date"))%>%
+  left_join(Mobility_all, by=c("State","Date"))#%>%
+  # left_join(Severity, by=c("State","Date"))%>%
+  #filter("Date" >='2021-01-13')
 
 binning<- function(x) {10^(ceiling(log10(x)))}
 
 #use save.image() at any time to save all environment data into an .RData file
 save.image(file='./output/covid-19.RData')
+

@@ -42,6 +42,7 @@ library(DT)
 library(stringr)
 library(rvest)
 library(robotstxt)
+library(data.table)
 #load('./output/covid-19.RData')
 shinyUI(navbarPage(title = 'COVID-19',
                    fluid = TRUE,
@@ -49,8 +50,8 @@ shinyUI(navbarPage(title = 'COVID-19',
                    #Select whichever theme works for the app 
                    theme = shinytheme("yeti"),
                    #--------------------------
-                   #tab panel 1 - Home
-                   tabPanel("Home",icon = icon("home"),
+                   #tab panel 1 - Basic Case/Death Graph
+                   tabPanel("Basic Case/Death Graph",icon = icon("home"),
                             fluidPage(
                               fluidRow(
                                 column(12,
@@ -68,7 +69,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                                             animate = TRUE, step = 5),
                                                 fluidRow(
                                                   #select the country we want to see the trend
-                                                  column(6, 
+                                                  column(6,
                                                          selectInput('country','Which State?',
                                                                      choices = state_names_choices,
                                                                      selected = 'United States of America')),
@@ -105,7 +106,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                                     timeFormat = "%Y-%m-%d",
                                                      animate = TRUE, step = 5),
                                           style = "opacity: 0.80"))),
-  
+
 
                    # ----------------------------------
                    #tab panel 3 - Source
@@ -262,40 +263,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                             )),
                    #Tab panel 5 - Ranking Table
                    tabPanel("Ranking Table",icon = icon("thumbs-up"),  #Need a "," here
-                   ############## YOUR CODE STARTS HERE ##############
-                   # fluidPage(
-                   #   titlePanel("reactable example"),
-                   #   reactableOutput("table"),
-                   #   tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                   #   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
-                   # ),
-                   
-                   
-                   # sidebar <- dashboardSidebar(
-                   #   sidebarMenu(
-                   #     menuItem("Ranking", tabName = "ranking", icon = icon("dashboard")),
-                   #     menuItem("Covid Status", icon = icon("clinic-medical"), tabName = "status"),
-                   #     menuItem("Vulnerability", icon = icon("allergies"), tabName = "vulnerability"),
-                   #     menuItem("Life Quality", icon = icon("briefcase-medical"), tabName = "quality")
-                   #   )
-                   # ),
-                   # 
-                   # body <- dashboardBody(
-                   #   tabItems(
-                   #     tabItem(tabName = "ranking",
-                   #             fluidPage(
-                   #               titlePanel("reactable example"),
-                   #               reactableOutput("table"),
-                   #               tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                   #               tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
-                   #             )
-                   #     ),
-                   #     
-                   #     tabItem(tabName = "status",
-                   #             # h2("Widgets tab content")
-                   #     )
-                   #   )
-                   # ),
+                   ############## YOUR CODE STARTS HERE #############
                    
                    
                    dashboardPage(
@@ -316,7 +284,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                    titlePanel("Resilience Ranking of the States"),
                                    reactableOutput("table"),
                                    tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
                                  )
                          ),
                          
@@ -326,7 +294,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                    titlePanel("Covid Status Across States"),
                                    reactableOutput("table1"),
                                    tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
                                  )
                          ),
                          
@@ -336,7 +304,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                    titlePanel("Medical Vulnerability by State"),
                                    reactableOutput("table2"),
                                    tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
                                  )
                          ),
                          
@@ -346,7 +314,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                                    titlePanel("Quality of Life by State"),
                                    reactableOutput("table3"), 
                                    tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,700|Fira+Mono&display=fallback", rel = "stylesheet"),
-                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css"),
+                                   tags$link(rel = "stylesheet", type = "css", href = "styledef.css")
                                  )
                          )
                          
@@ -357,16 +325,64 @@ shinyUI(navbarPage(title = 'COVID-19',
                    
                    ##########  ### YOUR CODE ENDS HERE ##############
                    ),
-                    #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)
-                   tabPanel("Statistical Graphs",icon = icon("weibo")  #Need a "," here
-                   ############## YOUR CODE STARTS HERE ##############
-                   
-                   
-                   
+                    
+                   #Tab panel 6 - Statistical Graphs (Finish if having time, not necessary)
+                   tabPanel("Interactive Trend Plots",icon = icon("bacterium"),  #Need a "," here
+                            ############## YOUR CODE STARTS HERE ##############
+                          dashboardPage(
+                            dashboardHeader(disable = TRUE),
+                            dashboardSidebar(
+                               sidebarMenu(
+                                  menuItem("Trend with Vaccinations", tabName = "ranking", icon = icon("dashboard")),
+                                  menuItem("Trend with Mobility", icon = icon("clinic-medical"), tabName = "status"))
+                              ),
+                              dashboardBody(
+                                tabItems(
+                                  ##### tab of vaccinations #####
+                                  tabItem(tabName = "Trend of Vaccinations",
+                                          fluidRow(column(12,
+                                                          h3("Interactive Dashboard on Vaccinaitons"),
+                                                          "The following scatterplot gives a comparison between how the number of confirmed cases and the number of deaths were varying
+                                                 as the vaccinations are being more and more widely adopted. It therefore shows the importance of the vaccinations as to the epidemic prevention.
+                                                 Considering the positive effects of the vaccinations, we include it as a measure of a state's level of healthcare for the construction of the ranking model.
+                                                 ")),
+                                          br(),
+                                          pickerInput(inputId="state_dropdown",label='Select up to Five States',
+                                                      choices=unique(states_complete$State),multiple=TRUE,
+                                                      options=list(`max-options`=5),
+                                                      selected='Alabama'
+                                          ),
+                                          plotlyOutput("vaccine_ts",height="800px",width="100%"),
+                                          br(),
+                                          br()
+                                  ),
+                                  ##### tab of mobility #####
+                                  tabItem(tabName = "Trend of Mobility",
+                                          fluidRow(column(12,
+                                                          h3("Interactive Dashboard on Mobility across States"),
+                                                          "The Time Series plot for different categories of mobility
+                                                 shows the trend of this indicator.
+                                                 Click on the dropdown button
+                                                 to select different states and compare how they differ in mobility features.")),
+                                          br(),
+                                          pickerInput(inputId="state_dropdown",label='Select up to Five States',
+                                                      choices=unique(states_complete$State),multiple=TRUE,
+                                                      options=list(`max-options`=5),
+                                                      selected='Alabama'
+                                          ),
+                                          plotlyOutput("mobi_ts",height="800px",width="100%"),
+                                          br(),
+                                          br()
+                                  )
+
+                                )))
+
+
+
                    ############## YOUR CODE ENDS HERE ################
           ),
-          # Tab Panel 7 - Model Map
-          tabPanel("Model Map", icon= icon("aws")),
+          # # Tab Panel 7 - Model Map
+          # tabPanel("Model Map", icon= icon("aws")),
           ############## YOUR CODE STARTS HERE ##############
           
           
@@ -377,8 +393,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                    HTML(
                      ################### Your HTML Code Starts Here ##################
                      # Notice the single quote mark: '  //  Put everything between two single-quote marks
-                     '
-                    <h1><strong>What to expect from our website</strong></h1>
+                     '<h1><strong>What to expect from our website</strong></h1>
                     <ul>
                     <li>
                     <h4>We used information about covid-19 in the US to provide an overview about how the states are performing under the pandemic, and under other health conditions in general.</h4>
@@ -395,9 +410,7 @@ shinyUI(navbarPage(title = 'COVID-19',
                     <h1>About Us</h1>
                     <p>This COVID-19 US States Ranking App is presented by Jingbin Cao, Weiwei Song, Yutong Yang, and Renyin Zhang.&nbsp;</p>
                     <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                     
-                     '
+                    <p>&nbsp;</p>'
                      ################### Your HTML Code Ends Here ##################
                    ))
                           
