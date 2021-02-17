@@ -24,6 +24,5 @@ Interactive Trend Plots of Vaccinations: WS, YY
 
 Interactive Trend Plots of Mobility: WS, YY
 
-Basic Case/Death Graph: JC
-
+Basic Case/Death Graph: JC \n
 About: RZ, JC
