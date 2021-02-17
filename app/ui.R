@@ -356,7 +356,7 @@ shinyUI(navbarPage(title = 'COVID-19',
           
           ############## YOUR CODE ENDS HERE ################
           # Tab Panel 7 - About Us
-          tabPanel("About Us",icon = icon("address-book"),
+          tabPanel("About",icon = icon("address-book"),
                    HTML(
                      ################### Your HTML Code Starts Here ##################
                      # Notice the single quote mark: '  //  Put everything between two single-quote marks
