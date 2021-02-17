@@ -194,6 +194,14 @@ output$table <- renderReactable({
                   align = "center",
                   minWidth = 100
               ), 
+              theme = reactableTheme(
+                  borderColor = "#dfe2e5",
+                  stripedColor = "#f6f8fa",
+                  highlightColor = "#f0f5f9",
+                  cellPadding = "8px 12px",
+                  style = list(
+                      fontFamily = "-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif"
+                  )),
               # theme = reactableTheme(
               #   headerStyle = list(
               #     "&:hover[aria-sort]" = list(background = "hsl(0, 0%, 96%)"),
@@ -207,26 +215,28 @@ output$table <- renderReactable({
                   colGroup(name = "VULNERABIlITY",columns = vul_cols)),
               columns = list(
                   #RANK
-                  Rank=colDef(class="rank-cell",maxWidth = 65, name="RANK",align="left",
+                  Rank=colDef(class="rank-cell",maxWidth = 75, name="RANK",align="left",
                               style = sticky_style, headerStyle = sticky_style),
                   #STATE need to insert pictures 
-                  State = colDef(defaultSortOrder = "asc",
+                  State = colDef(name="STATE", defaultSortOrder = "asc",
                                  maxWidth = 110,
                                  headerStyle = list(fontWeight = 700), 
-                                 cell = function(value) {
-                                     div(
-                                         class = "state-cell",
-                                         img(class = "flag",  src = sprintf("%s.png", value)),
-                                         div(class = "state-name", value)
-                                     )
-                                     #    alt = paste(value, "flag"),             
-                                     #                 
-                                     #               image<-img(src = sprintf("images/%s.png", value), height = "24px", alt =value)
-                                     # tagList(
-                                     #   div(style = list(display = "inline-block", width = "45px"), image)
-                                 }),
+                                 # cell = function(value) {
+                                 #     # div(
+                                 #     #     class = "state-cell",
+                                 #     #     img(class = "flag",  src = sprintf("%s.png", value)),
+                                 #     #     div(class = "state-name", value)
+                                 #     # )
+                                 #     #    alt = paste(value, "flag"),             
+                                 #     #                 
+                                 #     #               image<-img(src = sprintf("images/%s.png", value), height = "24px", alt =value)
+                                 #     # tagList(
+                                 #     #   div(style = list(display = "inline-block", width = "45px"), image)
+                                 # }
+                                 
+                  ),
                   #SCORE need colors 
-                  Score=colDef(name="RESILIENCE SCORE",
+                  Score=colDef(name="SCORE",
                                maxWidth = 65,
                                style = function(value) {
                                    value
@@ -396,6 +406,232 @@ output$table <- renderReactable({
     
 }
 )
+
+
+####### table of status#######
+output$table1 <- renderReactable({
+    reactable(data1,
+              showSortIcon = FALSE,
+              minRows = 25,
+              defaultSorted="State",
+              columns=list(
+                  One_Month_Cases=colDef(name="1-MONTH CASES",
+                                         format=colFormat(separators = TRUE),
+                                         cell = function(value) {
+                                             width <- paste0(value * 100 / max(data1$One_Month_Cases), "%")
+                                             value <- format(value, big.mark = ",")
+                                             
+                                             # Fix each label using the width of the widest number (incl. thousands separators)
+                                             value <- format(value, width = 9, justify = "right")
+                                             bar_chart(value, width = width, fill = "#fc5185", background = "#e1e1e1")
+                                         },align = "left",
+                                         # Use the operating system's default monospace font, and
+                                         # preserve white space to prevent it from being collapsed by default
+                                         style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  ),
+                  One_month_fatality_rate=colDef(name="1-MONTH FATALITY RATE",
+                                                 cell = function(value) {
+                                                     value <- paste0(format(value * 100, nsmall = 1), "%")
+                                                     value <- format(value, width = 5, justify = "right")
+                                                     
+                                                     # Fix each label using the width of the widest number (incl. thousands separators)
+                                                     bar_chart(value, width = value, fill = "#fc5185", background = "#e1e1e1")
+                                                 },align = "left",
+                                                 # Use the operating system's default monospace font, and
+                                                 # preserve white space to prevent it from being collapsed by default
+                                                 style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  ),
+                  
+                  Total_Deaths=colDef(name="TOTAL DEATHS",
+                                      format=colFormat(separators = TRUE),
+                                      cell = function(value) {
+                                          width <- paste0(value * 100 / max(data1$Total_Deaths), "%")
+                                          # Add thousands separators
+                                          value <- format(value, big.mark = ",")
+                                          value <- format(value, width = 9, justify = "right")
+                                          bar_chart(value, width = width, fill = "#fc5185", background = "#e1e1e1")
+                                      },align = "left",
+                                      # Use the operating system's default monospace font, and
+                                      # preserve white space to prevent it from being collapsed by default
+                                      style = list(fontFamily = "monospace", whiteSpace = "pre"))
+                  ,
+                  Positive_Test_Rate=colDef(name="POSITIVE TEST RATE",
+                                            format=colFormat(percent = TRUE,digits = 1),
+                                            cell = function(value) {
+                                                value <- paste0(format(value * 100, nsmall = 1), "%")
+                                                value <- format(value, width = 5, justify = "right")
+                                                
+                                                # Fix each label using the width of the widest number (incl. thousands separators)
+                                                bar_chart(value, width = value, fill = "#fc5185", background = "#e1e1e1")
+                                            },align = "left",
+                                            # Use the operating system's default monospace font, and
+                                            # preserve white space to prevent it from being collapsed by default
+                                            style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  )))
+    
+})
+
+####### table of vul #######
+output$table2 <- renderReactable({
+    reactable(data2,
+              showSortIcon = FALSE,
+              minRows = 25,
+              defaultSorted="State",
+              columns = list(
+                  assess_to_vaccines_per_hundred=colDef(name="ACCESS TO COVID VACCINES",
+                                                        format=colFormat(digits = 0), cell = function(value) {
+                                                            width <- paste0(value * 100 / max(data2$assess_to_vaccines_per_hundred), "%")
+                                                            # Add thousands separators
+                                                            value <- format(value, big.mark = ",")
+                                                            value <- format(value, width = 9, justify = "right")
+                                                            bar_chart(value, width = width, fill = "#3fc1c9", background = "#e1e1e1")
+                                                        },align = "left",
+                                                        # Use the operating system's default monospace font, and
+                                                        # preserve white space to prevent it from being collapsed by default
+                                                        style = list(fontFamily = "monospace", whiteSpace = "pre")),
+                  doses_per_hundred=colDef(name="DOSES GIVEN PER 100", format=colFormat(digits = 0),
+                                           cell = function(value) {
+                                               width <- paste0(value * 100 / max(data2$doses_per_hundred), "%")
+                                               # Add thousands separators
+                                               value <- format(value, big.mark = ",")
+                                               value <- format(value, width = 9, justify = "right")
+                                               bar_chart(value, width = width, fill = "#3fc1c9", background = "#e1e1e1")
+                                           },align = "left",
+                                           # Use the operating system's default monospace font, and
+                                           # preserve white space to prevent it from being collapsed by default
+                                           style = list(fontFamily = "monospace", whiteSpace = "pre")),
+                  respiratory_mortality_rate=colDef(
+                      name="respiratory mortality rate",format=colFormat(percent =TRUE,digits=0),
+                      cell = function(value) {
+                          value <- paste0(format(value * 100, nsmall = 1), "%")
+                          value <- format(value, width = 5, justify = "right")
+                          
+                          # Fix each label using the width of the widest number (incl. thousands separators)
+                          bar_chart(value, width = value, fill = "#fc5185", background = "#e1e1e1")
+                      },align = "left",
+                      # Use the operating system's default monospace font, and
+                      # preserve white space to prevent it from being collapsed by default
+                      style = list(fontFamily = "monospace", whiteSpace = "pre")),
+                  respiratory_infections_rate=colDef(name="respiratory infections rate",
+                                                     format=colFormat(percent=TRUE,digits = 0),
+                                                     cell = function(value) {
+                                                         value <- paste0(format(value * 100, nsmall = 1), "%")
+                                                         value <- format(value, width = 5, justify = "right")
+                                                         
+                                                         # Fix each label using the width of the widest number (incl. thousands separators)
+                                                         bar_chart(value, width = value, fill = "#fc5185", background = "#e1e1e1")
+                                                     },align = "left",
+                                                     # Use the operating system's default monospace font, and
+                                                     # preserve white space to prevent it from being collapsed by default
+                                                     style = list(fontFamily = "monospace", whiteSpace = "pre")),
+                  obesity_prevalence=colDef(name="OBESITY PREVALENCE",
+                                            format=colFormat(percent=TRUE),
+                                            cell = function(value) {
+                                                value <- paste0(format(value * 100, nsmall = 1), "%")
+                                                value <- format(value, width = 5, justify = "right")
+                                                
+                                                # Fix each label using the width of the widest number (incl. thousands separators)
+                                                bar_chart(value, width = value, fill = "#fc5185", background = "#e1e1e1")
+                                            },align = "left",
+                                            # Use the operating system's default monospace font, and
+                                            # preserve white space to prevent it from being collapsed by default
+                                            style = list(fontFamily = "monospace", whiteSpace = "pre")),
+                  HospitalBeds=colDef(name="HOSPITAL BEDS",
+                                      format=colFormat(digits=3), cell = function(value) {
+                                          width <- paste0(value * 100 / max(data2$HospitalBeds), "%")
+                                          # Add thousands separators
+                                          value <- format(value, big.mark = ",")
+                                          value <- format(value, width = 9, justify = "right")
+                                          bar_chart(value, width = width, fill = "#3fc1c9", background = "#e1e1e1")
+                                      },align = "left",
+                                      # Use the operating system's default monospace font, and
+                                      # preserve white space to prevent it from being collapsed by default
+                                      style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  )
+              ))
+    
+    
+})
+
+####### table of quality #######
+output$table3 <- renderReactable({
+    
+    reactable(data3,
+              showSortIcon = FALSE,
+              minRows = 25,
+              defaultSorted="State",
+              columns=list(
+                  HDI=colDef(name="HUMAN DEVELOPMENT INDEX",
+                             cell = function(value) {
+                                 width <- paste0(value * 100 / max(data3$HDI), "%")
+                                 value <- format(value, big.mark = ",")
+                                 
+                                 # Fix each label using the width of the widest number (incl. thousands separators)
+                                 value <- format(value, width = 9, justify = "right")
+                                 bar_chart(value, width = width, fill = "#3fc1c9", background = "#e1e1e1")
+                             },align = "left",
+                             # Use the operating system's default monospace font, and
+                             # preserve white space to prevent it from being collapsed by default
+                             style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  ),
+                  Rank_health=colDef(name="HEALTHCARE RANK",
+                                     cell = function(value) {
+                                         width <- paste0(value * 100 / max(data3$Rank_health), "%")
+                                         value <- format(value, big.mark = ",")
+                                         
+                                         # Fix each label using the width of the widest number (incl. thousands separators)
+                                         value <- format(value, width = 9, justify = "right")
+                                         bar_chart(value, width = width, fill = "#3fc1c9", background = "#e1e1e1")
+                                     },align = "left",
+                                     # Use the operating system's default monospace font, and
+                                     # preserve white space to prevent it from being collapsed by default
+                                     style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  ),
+                  Gross_State_Product=colDef(name="2021 GDP GROWTH FORECAST",
+                                             cell = function(value) {
+                                                 width <- paste0(value * 100 / max(data3$Gross_State_Product), "%")
+                                                 value <- format(value, big.mark = ",")
+                                                 
+                                                 # Fix each label using the width of the widest number (incl. thousands separators)
+                                                 value <- format(value, width = 9, justify = "right")
+                                                 bar_chart(value, width = width, fill = "#3fc1c9", background = "#e1e1e1")
+                                             },align = "left",
+                                             # Use the operating system's default monospace font, and
+                                             # preserve white space to prevent it from being collapsed by default
+                                             style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  ),
+                  Mobility=colDef(name="COMMUNITY MOBILITY",format=colFormat(digits = 0,suffix = "%"),
+                                  cell = function(value) {
+                                      width <- paste0(value * 100 / max(data3$Mobility), "%")
+                                      value <- format(value, big.mark = ",")
+                                      
+                                      # Fix each label using the width of the widest number (incl. thousands separators)
+                                      value <- format(value, width = 9, justify = "right")
+                                      bar_chart(value, width = width, fill = "#fc5185", background = "#e1e1e1")
+                                  },align = "left",
+                                  # Use the operating system's default monospace font, and
+                                  # preserve white space to prevent it from being collapsed by default
+                                  style = list(fontFamily = "monospace", whiteSpace = "pre") ),
+                  lockdown_severity=colDef(name="LOCKDOWN SEVERITY",
+                                           format=colFormat(digits =0),
+                                           cell = function(value) {
+                                               width <- paste0(value * 100 / max(data3$lockdown_severity), "%")
+                                               value <- format(value, big.mark = ",")
+                                               
+                                               # Fix each label using the width of the widest number (incl. thousands separators)
+                                               value <- format(value, width = 9, justify = "right")
+                                               bar_chart(value, width = width, fill = "#fc5185", background = "#e1e1e1")
+                                           },align = "left",
+                                           # Use the operating system's default monospace font, and
+                                           # preserve white space to prevent it from being collapsed by default
+                                           style = list(fontFamily = "monospace", whiteSpace = "pre")
+                  ))
+    )
+    
+})
+
+
+
 
 div(class = "standings",
     div(class = "title",
