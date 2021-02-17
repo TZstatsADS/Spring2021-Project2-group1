@@ -8,6 +8,7 @@ output: html_document
 ```{r,read packages}
 ###data are in the graphical_data folder under data
 library(tidyverse)
+library(reshape2)
 Mobility1<-read_csv("2020_US_Region_Mobility_Report.csv")
 
 Mobility2<-read_csv("applemobilitytrends-2021-02-15.csv")
@@ -16,13 +17,18 @@ covid_confirmed<-read_csv("time_series_covid19_confirmed_US.csv")%>%
   rename(State=Province_State)%>%
   select(State,`1/22/20`:`2/15/21`)%>%
   gather(key="Date",value="confirmed_number",-State)
+
 covid_death<-read_csv("time_series_covid19_deaths_US.csv")%>%
   rename(State=Province_State)%>%
   select(State,Population,`1/22/20`:`2/15/21`)%>%
   gather(key="Date",value="death",-Population,-State)
   
+covid_all<-covid_death%>%
+  left_join(covid_confirmed,by=c("State","Date"))
+
 vaccine<-read_csv("us_state_vaccinations.csv")%>%
-  rename(State=location,Date=date)
+  rename(State=location,Date=date)%>%
+  drop_na()
   
 ```
 
@@ -48,7 +54,7 @@ Mobility_tans_type<-Mobility2%>%
   select(-geo_type,-region,-country,-alternative_name)%>%
   rename(State=`sub-region`)%>%
   drop_na()
-library(reshape2)
+
 mobdata<-melt(Mobility_tans_type,id.vars=c("State","transportation_type"),
              variable.name="Date",value.name="change")
 New_Mobility_trans_type<-dcast(mobdata, State+Date ~ transportation_type, mean)%>%
@@ -58,7 +64,9 @@ New_Mobility_trans_type<-dcast(mobdata, State+Date ~ transportation_type, mean)%
 New_Mobility_trans_type$Date<-as.Date(New_Mobility_trans_type$Date)
 
 ##### merging mobility
-Mobility_all<-Mobility_place%>% left_join(New_Mobility_trans_type, by=c("State","Date"))
+Mobility_all<-Mobility_place%>% 
+  left_join(New_Mobility_trans_type, by=c("State","Date"))%>%
+  drop_na()
 
 ```
 
