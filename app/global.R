@@ -316,14 +316,14 @@ us_death <- read.csv(Death_Time_URL)
 
 ############ One Time Data ############
 # get variants data
-variants <- read.csv("../data/raw_map_data/variant_data.csv")
+variants <- read.csv("./data/raw_map_data/variant_data.csv")
 variants <- variants[-c(175,176,177,178,179,180,181,182,183,184),]
 
 # get GDP data
-GDP <- read.csv("../data/raw_map_data/GDP_data.csv")
+GDP <- read.csv("./data/raw_map_data/GDP_data.csv")
 
 # get personal income data
-income <- read.csv("../data/raw_map_data/personal_income_data.csv")
+income <- read.csv("./data/raw_map_data/personal_income_data.csv")
 
 # get vaccination data
 #get the updated vaccination data by states
@@ -372,7 +372,7 @@ output_shapefile_filepath <- "./output/states_shapeFile.RData"
 if(file.exists(output_shapefile_filepath)){
   load(output_shapefile_filepath)
 }else{
-  states <- readOGR(dsn ="../data/ne_10m_admin_1_states_provinces",
+  states <- readOGR(dsn ="./data/ne_10m_admin_1_states_provinces",
                        layer = "ne_10m_admin_1_states_provinces",
                        encoding = "utf-8",use_iconv = T,
                        verbose = FALSE)
