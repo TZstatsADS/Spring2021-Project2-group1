@@ -378,9 +378,24 @@ shinyUI(navbarPage(title = 'COVID-19',
                      ################### Your HTML Code Starts Here ##################
                      # Notice the single quote mark: '  //  Put everything between two single-quote marks
                      '
-                    
-                     
-                     
+                    <h1><strong>What to expect from our website</strong></h1>
+                    <ul>
+                    <li>
+                    <h4>We used information about covid-19 in the US to provide an overview about how the states are performing under the pandemic, and under other health conditions in general.</h4>
+                    </li>
+                    <li>
+                    <h4>On our website, you can find information about the US COVID-19 cases spread, daily update of vaccination information, state to state comparison, and so on.</h4>
+                    </li>
+                    </ul>
+                    <h1>&nbsp;</h1>
+                    <h1>About the Data</h1>
+                    <p>We used data from ....</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <h1>About Us</h1>
+                    <p>This COVID-19 US States App is presented by Jingbin Cao, Weiwei Song, Yutong Yang, and Renyin Zhang.&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
                      '
                      ################### Your HTML Code Ends Here ##################
                    ))
