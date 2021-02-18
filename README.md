@@ -15,7 +15,7 @@ Term: Spring 2021
 	+ Renyin Zhang
 
 + **Shiny App link**
-	+ [website]() 
+	+ [website](https://jingbincolumbia.shinyapps.io/app_covid/) 
 
 ![screenshot](doc/figs/ResilienceRanking.png)
  
